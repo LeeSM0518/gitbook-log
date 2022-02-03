@@ -1,5 +1,6 @@
 ---
 coverY: 0
+cover: .gitbook/assets/Frame 68.png
 ---
 
 # 2022.01.03
