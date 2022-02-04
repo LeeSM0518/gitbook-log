@@ -1,6 +1,6 @@
 ---
-coverY: 0
-cover: .gitbook/assets/Frame 68.png
+coverY: 204.83828861493836
+cover: .gitbook/assets/Frame 77.png
 description: 일일 회고 1회차
 ---
 

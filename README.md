@@ -1,7 +1,7 @@
 ---
 description: 일일 회고 2회차
-cover: .gitbook/assets/Frame 68.png
-coverY: 0
+cover: .gitbook/assets/Frame 77.png
+coverY: 191.62291515591008
 ---
 
 # 🙂 2022.01.04
