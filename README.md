@@ -48,7 +48,11 @@ nuxt3 tutorial repository
 
 레디스 튜닝을 학습하면서 느낀점은 해당 내용을 게시물로 작성한 날에 회고를 할 예정이다.
 
-100%를 완료하지 못해서 아쉽긴 하지만 회고록을 써야할 시간이 되어 나머지는 주말에 학습할 예정이다.[https://equinox-dirigible-aec.notion.site/b5c84f2861084ca59dfa56b1fe17e9be](https://equinox-dirigible-aec.notion.site/b5c84f2861084ca59dfa56b1fe17e9be)     ㄹefw
+100%를 완료하지 못해서 아쉽긴 하지만 회고록을 써야할 시간이 되어 나머지는 주말에 학습할 예정이다.
+
+{% embed url="https://equinox-dirigible-aec.notion.site/b5c84f2861084ca59dfa56b1fe17e9be" %}
+'레디스 튜닝' 1차 정리
+{% endembed %}
 
 
 
