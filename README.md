@@ -9,7 +9,7 @@ coverY: 179.61485974222896
 ## 할일 및 한일
 
 * [x] '소프트웨어 아키텍처' 세미나 복습  과제 수행
-* [ ] '레디스' 세미나 발표 자료 제작
+* [x] '레디스' 세미나 발표 자료 제작 (20%)
 
 ## 경험과 배움
 
@@ -75,6 +75,12 @@ reduce 메소드의 시그니처는 다음과 같다.
 {% embed url="https://stackoverflow.com/questions/24308146/why-is-a-combiner-needed-for-reduce-method-that-converts-type-in-java-8/24308988#24308988" %}
 Reference
 {% endembed %}
+
+
+
+### '레디스' 세미나 발표 자료 제작 (20%)
+
+Notion에 정리해 놓은 내용을 기반으로 세미나 발표 자료를 제작하면서 어떻게 PPT 슬라이드를 구성해야 할지 고민이 되다 보니 생각보다 많이 진행하지 못 한거 같다.
 
 
 
