@@ -59,7 +59,7 @@ _**WebFlux? JooQ?**_\
 
 그 후 나는 다음과 같이 `배터리 관제 시스템` 의 아키텍처를 설계하였다.
 
-![배터리 관제 시스템 아키텍처](.gitbook/assets/image.png)
+![배터리 관제 시스템 아키텍처](<.gitbook/assets/image (1).png>)
 
 {% hint style="info" %}
 _**배터리 관제 시스템 구성요소**_\
