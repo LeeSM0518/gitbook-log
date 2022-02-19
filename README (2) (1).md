@@ -1,5 +1,5 @@
 ---
-description: 일일 회고 11일차
+description: 일일 회고 11회차
 cover: .gitbook/assets/Frame 77.png
 coverY: 160
 ---
