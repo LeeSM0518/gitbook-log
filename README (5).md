@@ -103,7 +103,7 @@ vue-daum-postcode를 사용한 리포지토리 2
 
 위와 같이 API 연동은 잘 됐으나, 또 문제가 발생했다. 이는 처음에 API를 불러올 때는 정상적으로 불러오지만 **그 후로는 못 불러오는 문제가 발생**했기 때문이다.
 
-![두 번째로 API를 호출했을 경우, API가 불러와지지 않는다.](.gitbook/assets/image.png)
+![두 번째로 API를 호출했을 경우, API가 불러와지지 않는다.](<.gitbook/assets/image (1).png>)
 
 
 
