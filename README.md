@@ -69,3 +69,58 @@ computed: {
 
 
 
+모든 API 요청에 대해 헤더의 Authorization 존재 여부를 확인하고 쿠키에 토큰이 존재 여부를 확인하는 로직이 필요하며, 모든 API 응답에 대해 토큰 만료 여부 확인 및 재발행 요청 로직이 필요하다. 그러므로 Axios에서 제공하는 Interceptors에 해당 로직을 구현하여 확인하기로 결정했다.
+
+{% embed url="https://axios-http.com/docs/interceptors" %}
+Axios 공식 문서 | Interceptors
+{% endembed %}
+
+&#x20;
+
+Axios의 Interceptors를 활용하여 구현한 토큰 전달 및 재발행 로직은 다음과 같다.
+
+```javascript
+instance.interceptors.request.use(
+  config => {
+    if (process.client && !config.headers.Authorization) {
+      const accessToken = Cookies.get('accessToken');
+      if (!accessToken && window.location.pathname !== '/login') {
+        window.location.href = '/login'
+      } else {
+        config.headers.Authorization = `Bearer ${accessToken}`
+      }
+    }
+    return config
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
+
+instance.interceptors.response.use(response => {
+  return response;
+}, error => {
+  if (error.response.data.code === 'AUTH-REQ003') {
+    return refreshToken()
+      .then(result => {
+        const tokens = result.data.information;
+        Cookies.set('accessToken', tokens.accessToken)
+        Cookies.set('refreshToken', tokens.refreshToken)
+        return instance.request(error.config)
+      })
+      .catch(_ => {
+        window.location.href = '/login'
+      })
+  }
+  return Promise.reject(error);
+});
+```
+
+
+
+## 개선 및 목표
+
+* 백엔드의 사이트 관련 API 수정 완료 시, 사이트 관리 페이지 구현 완료하기
+* 현재는 프론트에서 accessToken을 쿠키로 관리하지만 LocalStorage로 관리하는 것도 고려해보기
+* 토큰 재발행 로직에서 에러 코드로 재발행 필요 여부를 확인하는데 다른 방법이 없을지 조사하기
+
