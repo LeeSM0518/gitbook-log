@@ -1,15 +1,12 @@
 ---
-description: 일일 회고 25회차
+description: 일일 회고 26일차
 cover: .gitbook/assets/Frame 77.png
-coverY: 200.3396512509477
+coverY: 208
 ---
 
-# 😕 2022.02.27
+# 🙂 2022.02.28
 
 ## 할일 및 한일
 
-* [x] `중고 경매 애플리케이션` 요구사항 정리
-* [x] `중고 경매 애플리케이션` DB 재설계
-
-## 경험 및 배움
+* [ ] Elasticsearch 세미나 청강
 
