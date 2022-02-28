@@ -9,4 +9,5 @@ coverY: 208
 ## 할일 및 한일
 
 * [ ] Elasticsearch 세미나 청강
+* [ ] API Gateway 조사
 
