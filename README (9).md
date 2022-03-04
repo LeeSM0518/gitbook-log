@@ -63,7 +63,7 @@ Spring Cloud Gateway 정리 페이지
 
 
 
-![사이트 상세 조회 기능](<.gitbook/assets/image (4).png>)
+![사이트 상세 조회 기능](<.gitbook/assets/Screen Shot 2022-03-04 at 4.14.11 PM.png>)
 
 
 
