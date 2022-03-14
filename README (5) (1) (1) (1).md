@@ -43,7 +43,7 @@ import {VueDaumPostcode} from "vue-daum-postcode"
 </script>
 ```
 
-![에러 발생](<.gitbook/assets/image (3) (1) (1).png>)
+![에러 발생](<.gitbook/assets/image (3) (1) (1) (1).png>)
 
 
 

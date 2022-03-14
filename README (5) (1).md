@@ -27,7 +27,7 @@ coverY: 165.79833206974982
 
 사이트 검색 기능은 아래와 같이 사이트 이름과 주소로 검색이 가능하도록 구현했다.
 
-![사이트 검색 기능 (이름으로 검색)](<.gitbook/assets/image (3).png>)
+![사이트 검색 기능 (이름으로 검색)](<.gitbook/assets/image (3) (1).png>)
 
 ![사이트 검색 기능 (주소로 검색)](<.gitbook/assets/image (2).png>)
 
