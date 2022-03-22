@@ -20,7 +20,7 @@ coverY: 214.76094276094275
 
 
 
-![사이트 삭제](<.gitbook/assets/image (4) (1).png>)
+![사이트 삭제](<.gitbook/assets/image (4) (1) (1).png>)
 
 
 
