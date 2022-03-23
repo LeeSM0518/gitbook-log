@@ -1,6 +1,6 @@
 ---
 description: 일일 회고 29회차
-cover: .gitbook/assets/Frame 77.png
+cover: .gitbook/assets/Frame 85.png
 coverY: 202.67655236329935
 ---
 

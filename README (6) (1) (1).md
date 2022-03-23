@@ -1,7 +1,7 @@
 ---
 description: 일일 회고 22회차
-cover: .gitbook/assets/Frame 77.png
-coverY: 214.76094276094275
+cover: .gitbook/assets/Frame 85.png
+coverY: 199.76094276094275
 ---
 
 # 😃 2022.02.24

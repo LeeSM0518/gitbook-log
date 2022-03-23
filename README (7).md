@@ -1,6 +1,6 @@
 ---
 description: 일일 회고 26일차
-cover: .gitbook/assets/Frame 77.png
+cover: .gitbook/assets/Frame 85.png
 coverY: 208
 ---
 
