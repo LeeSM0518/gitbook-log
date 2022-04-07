@@ -1,37 +1,48 @@
 ---
-description: 일일 회고 53회차
+description: 일일 회고 54회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# 😔 2022.04.05
+# 😆 2022.04.06
 
 ## 할일 및 한일
 
 * [x] 논문 세미나 준비
-  * [x] HTTP Caching 조사 및 정리
+  * [x] HTTP Caching 정리
+* [x] AWS 세미나 청강
 
 ## 경험 및 배움
 
 ### 논문 세미나 준비
 
-어제는 Spring Cloud Gateway 문서 정리를 완료했으며, 오늘은 논문 주제의 핵심 부분인 캐싱에 대해 조사를 진행했다. 게이트웨이에 캐싱을 어떻게 적용하는 것이 좋을지를 기준으로 조사를 진행하다보니, HTTP에 `Cache-control` 이라는 헤더가 존재한다는 것을 알게 되었고 해당 헤더가 어떻게 사용되는지를 자세하게 알아봤다.
-
-이러한 HTTP 캐싱에 대해 설명되어 있는 페이지를 찾아서 정리를 진행했으며, 참고한 페이지와 정리한 페이지는 다음과 같다.
-
-{% embed url="https://developer.mozilla.org/ko/docs/Web/HTTP/Caching" %}
-HTTP caching
-{% endembed %}
+HTTP 캐싱에 대해서 정리를 진행하면서 캐시의 종류와 캐시 동작 방식, 캐시의 유효성, 리비전된 리소스, 캐시 검증 등을 알 수 있었으며, 현재는 정확히 이해하지 못하여 한 번 더 정리하면서 이해해 볼 예정이다.
 
 {% embed url="https://equinox-dirigible-aec.notion.site/HTTP-Caching-5a793ade39b74f0189381d07671b679e" %}
-Http Caching 정리 페이지
+HTTP Caching 정리 페이지
 {% endembed %}
 
 
 
-아직 정리를 진행중이며 정리를 완료하고, 내용을 재정리를 하여 블로그에 작성할 예정이다.
+### AWS 세미나 청강
+
+오늘 AWS 세미나 시간에 EC2 인스턴스를 생성하는 것과 VPC를 구성하는 것에 대해 실습을 진행했다.
+
+EC2 인스턴스를 생성하는 것은 이전에 해본 경험이 있어서 어렵지 않았으나, VPC를 구성하는 것은 해본적도 없으며 네트워크에 대한 이해도가 부족하여 어렵게 느껴졌다.
+
+
+
+EC2 인스턴스 생성 과정과 VPC 생성 과정은 다음 Notion 페이지에 정리해놨다.
+
+{% embed url="https://equinox-dirigible-aec.notion.site/AWS-1-90d1f96acffa48979fdfdd684e51e399" %}
+정리 페이지
+{% endembed %}
+
+
+
+다음주 AWS 세미나때 선배님에게 VPC와 서브넷, 라우팅 테이블, 인터넷 게이트웨이를 간단하게 설명을 부탁할 예정이다.
 
 ## 개선 및 목표
 
-* HTTP Caching 정리 완료하기
-* HTTP Caching 내용을 재정리하여 블로그에 업로드하기
+* HTTP Caching 재정리 하기
+* VPC와 서브넷, 라우팅 테이블, 인터넷 게이트웨이 이해하기
