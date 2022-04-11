@@ -1,12 +1,11 @@
 ---
-description: 일일 회고 57회차
+description: 일일 회고 58회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# 🙂 2022.04.09
+# 😄 2022.04.10
 
 ## 할일 및 한일
 
-* [x] 논문 세미나 발표
-* [x] 아키텍처 세미나 청강
+* [ ] 소변 데이터 기반의 건강상태 예측 AI 모델 구현
