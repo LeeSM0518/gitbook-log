@@ -20,11 +20,11 @@ coverY: 199.76094276094275
 
 
 
-![사이트 삭제](<.gitbook/assets/image (4) (1) (1).png>)
+![사이트 삭제](<.gitbook/assets/image (4) (1) (1) (1).png>)
 
 
 
-![해외 사이트 등록](<.gitbook/assets/image (2) (1).png>)
+![해외 사이트 등록](<.gitbook/assets/image (2) (1) (1).png>)
 
 ## 개선 및 목표
 

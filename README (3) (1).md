@@ -25,7 +25,7 @@ UX/UI를 담당하고 있는 친구가 애플리케이션의 페이지를 디자
 
 이번에 친구가 `Stop Coive-19 SW Challenge 아이디어 해커톤` 을 같이 나가자고 제안을 하여, 주말에 신청서와 계획서를 작성하기로 했었다. 그래서 오늘 아이디어를 고안하고 구체화한 뒤 계획서 작성 계획을 세우고 퇴근하기로 결정했다.
 
-![Stop Covid-19 SW Challenge 공고문](<.gitbook/assets/image (2) (1) (1) (1).png>)
+![Stop Covid-19 SW Challenge 공고문](<.gitbook/assets/image (2) (1) (1) (1) (1).png>)
 
 
 

@@ -27,7 +27,7 @@ _****_
 
 해당 기능은 Element UI에서 `DatePicker` 의 `Other measurements` 파트에서 제공하는 것을 알 수 있었다.
 
-![연도 선택 캘린더 기능 예시](<.gitbook/assets/image (7).png>)
+![연도 선택 캘린더 기능 예시](<.gitbook/assets/image (7) (1).png>)
 
 {% embed url="https://element.eleme.io/#/en-US/component/date-picker" %}
 Element UI Framework
@@ -45,7 +45,7 @@ Element UI Framework
 
 두 번째로 클레임 유형에 따른 건수는 Treemap을 사용하면 좋을 것 같다는 저번주 미팅때의 의견을 반영하여 Treemap 차트에 테스트 데이터를 구성해보니 다음과 같았다.
 
-![Treemap 차트 예시](<.gitbook/assets/image (6).png>)
+![Treemap 차트 예시](<.gitbook/assets/image (6) (1).png>)
 
 
 
