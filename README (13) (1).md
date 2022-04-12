@@ -1,52 +1,46 @@
 ---
-description: 일일 회고 52회차
+description: 일일 회고 55회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# 🥱 2022.04.04
+# 😟 2022.04.07
 
 ## 할일 및 한일
 
 * [x] 논문 세미나 준비
-  * [x] Spring Cloud Gateway 공식 도큐먼트 정리
+  * [x] 논문 주제의 아키텍처 그리기
 
 ## 경험 및 배움
 
 ### 논문 세미나 준비
 
-졸업 논문 주제를 `'IoT 환경에서의 마이크로서비스 최적화를 위한 API Gateway의 응답 캐싱 자동화'` 로 정했으며, 해당 논문을 작성하기 위해서는 성능 평가가 진행되어야하므로  마이크로서비스를 구현해야 한다.
-
-아직 마이크로서비스에 대한 지식이 부족하므로 여러 논문과 책을 보면서 내용을 정리할 예정이며, 오늘은 Gateway 관련 내용을 조사하고 정리하는 것을 진행했다.
-
-나는 Gateway를 사용해 본적이 없으므로 Gateway 관련 프로젝트를 조사해보다가, Spring을 사용하면 보통 Spring Cloud Gateway를 많이 활용한다는 것을 알게 되었다. 그래서 Spring Cloud Gateway의 공식 도큐먼트를 토대로 정리하는 것을 진행하기로 결정했다.
+이번 논문 세미나때 내 논문 주제에 대해 발표하고 피드백을 받기 위해, 내 논문 주제의 시스템 아키텍처를 설계하는 것을 진행했다.
 
 
 
-`Spring Cloud Gateway` 내용을 정리하는데 참고한 사이트들은 다음과 같다.
+졸업 논문 주제는 `'IoT 환경에서의 마이크로서비스 최적화를 위한 API Gateway의 응답 캐싱 자동화'` 이며, 설계한 시스템 아키텍처는 다음과 같다.
 
-{% embed url="https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html" %}
-Spring Cloud Gateway 공식 도큐먼트
-{% endembed %}
-
-{% embed url="https://godekdls.github.io/Spring%20Cloud%20Gateway/contents" %}
-Spring Cloud Gateway 공식 도큐먼트 번역본
-{% endembed %}
+![시스템 아키텍처](<.gitbook/assets/image (8).png>)
 
 
 
-이처럼 공식 도큐먼트를 정리하면서  _'공식 도큐먼트에는 매우 많은 기능과 정보가 담겨있으므로 핵심만 정리해놨다가 추후에 필요한 기능이 생겼을 때 찾아보는 것이 좋겠다'_ 라고 생각이 들었다.
+해당 아키텍처를 간단하게 설명하면 다음과 같다.
 
-`Spring Cloud Gateway` 를 정리한 Notion 페이지는 다음과 같다.
+* Application이 실행되면 Middleware로 자신의 IP와 Port를 전송하여 서비스 등록이 수행된다.
+* Command Application은 쓰기 요청만을 담당하며, Query Application은 읽기 요청만을 담당한다.
+* Gateway는 Client의 HTTP 요청 정보를 확인하여 응답 캐싱을 요구하는지를 검토하고, 만약 캐싱을 요구하는 요청이라면 In-Memory DB로부터 데이터를 조회한다.
+* 만약 Client가 요청 캐싱을 요구하면, In-Memory DB에 데이터를 저장한 후 Data Synchronizer가 RDBMS에 동기화를 진행한다.
+* Command Application은 Master RDBMS에 데이터를 저장하고, 저장된 데이터는 Slave RDBMS로 복제된다.
 
-{% embed url="https://equinox-dirigible-aec.notion.site/Spring-Cloud-Gateway-be9030935ab947baa61e9717dd82b8ba" %}
-Spring Cloud Gateway 정리 페이지
-{% endembed %}
+
+
+이로써 Client의 요청과 응답을 캐싱하여 성능이 향상되는 것과 Gateway에서 캐싱을 담당하여 Application 측에서는 캐싱에 대해 관여를 할 필요가 없게 되어 복잡도가 낮아지는 것을 기대할 수 있다.
 
 
 
-Spring Cloud Gateway를 정리하는 것은 완료했지만 아직 어떤 기능을 제공하는지 숙지가 되지 않아, 다시 정리하여 블로그에 올릴 예정이다.
+하지만 현재 Spring Cloud Eureka와 RedisGears에 대한 지식이 부족하므로 각 기술의 공식 도큐먼트를 찾아서 정리해볼 예정이다.
 
 ## 개선 및 목표
 
-* `Spring Cloud Gateway` 정리 후 블로그에 업로드하기
+* Spring Cloud Eureka와 RedisGears의 공식 도큐먼트 정리하기
