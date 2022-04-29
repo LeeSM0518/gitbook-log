@@ -1,11 +1,11 @@
 ---
-description: 일일 회고 70회차
+description: 일일 회고 71회차
+cover: .gitbook/assets/Frame 85 (1).png
+coverY: 0
 ---
 
-# 2022.04.27
+# 😄 2022.04.28
 
 ## 할일 및 한일
 
-* [ ] DDD 세미나 준비
-  * [ ] 수강신청 도메인의 이벤트 스토밍
-* [ ] Effective Kotlin 세미나 발표 준비
+* [ ] 졸업 논문 프로젝트 구현
