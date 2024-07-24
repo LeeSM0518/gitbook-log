@@ -10,7 +10,7 @@ description: 일일 회고 1회차
   * [x] PR 템플릿 수정
   * [x] 신기능 프로세스 설계
   * [x] gitflow 수정
-* [x] 개인 프로젝트
+* [x] &#x20;프로젝트
   * [x] Spring Event 학습
 
 
@@ -78,9 +78,52 @@ description: 일일 회고 1회차
 
 #### 신기능 프로세스 설계
 
-이번에 개발하게 된 비교탐지 기능에 대해 서빙 엔지니어와 같이 프로세스 설계를 진행했다.<img src=".gitbook/assets/image (11).png" alt="" data-size="line">
+이번에 개발하게 된 비교탐지 기능에 대해 서빙 엔지니어와 같이 프로세스 설계를 진행했다.
+
+<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+
+위와 같이 1차로 프로세스 설계를 마쳤으며 세부적인 내용은 추가 설계가 필요하다.
+
+
+
+#### gitflow 수정
+
+사내 서버에 배포하여 사용중인 self-hosted Runner가 다음과 같이 Docker에 문제가 존재하여 CI/CD가 실패하는 문제가 발생하고 있다.
+
+<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+
+이전에 인프라 팀에서 해결해주기로 했으나 2주 정도 해결이 안되고 있다..
+
+
+
+마냥 기다릴 수만은 없어서 gitflow를 수정하여 해결하는 방법을 진행했다.
+
+먼저 실패가 자주 일어나는 gradle build 부분을 self-hosted가 아닌 github-hosted runner를 사용하도록 수정하고 docker build하고 push하는 것만 self-hosted로 수정하여 테스트를 해봤다.
+
+<figure><img src=".gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+
+결과를 확인해보니 gradle build는 성공했으나 docker build를 수행할 때 에러가 난 것으로 확인됐다. build-test-package Job에서 version 정보를 가져와서 tag에 넣어야 하지만 이 과정에서 문제가 발생한 것으로 추측되어 디버깅을 진행한 후에 수정이 필요할 것 같다.
+
+
+
+### 개인 프로젝트
+
+#### Spring Events 학습
+
+devooks(전자책 판매 플랫폼)라는 개인 프로젝트에 알림 기능을 개발하기 위해 어떤 방법으로 구현하는 것이 좋을지 조사를 진행했다.
+
+처음에는 메시지 큐를 사용하여 알림 생성이 필요한 로직에서 이벤트를 발행하고 알림 도메인 측에서 해당 이벤트를 구독하여 알림을 저장하는 프로세스를 생각했다.&#x20;
+
+어떤 메시지 큐를 사용할지 조사하던 중에 Spring AOP를 활용하여 도메인 로직에   이벤트 발행 로직을 넣지 않고 외부에 둘 수 있는 방법이 있는 것을 알게 되었다. 그래서 따로 메시지 큐를 사용하지 않고 Spring 내부에서 이벤트를 주고 받을 수 있도록 구현한 후에 AOP를 활용하여 결합도를 낮추고, 추후에 서비스가 커졌을 때 메시지 큐를 도입해도 괜찮을 것 같다는 결론을 내렸다.
+
+위와 같은 이유로 Spring 자체 이벤트 발행 및 구독 방식을 구현해보기 위해 참고할만한 글을 찾던 중 다음 글을 발견하여 이를 보고 튜토리얼 프로젝트를 진행해 볼 예정이다.
+
+{% embed url="https://www.baeldung.com/spring-events" %}
 
 
 
 ## 개선 및 목표
+
+* gitflow를 빠르게 수정하여 CI/CD가 정상적으로 수행될 수 있도록 작업 필요
+* Spring Events와 AOP를 활용하여 알림을 편리하게 저장할 수 있는 구조로 튜토리얼 프로젝트를 만들어서 개인&#x20;
 
