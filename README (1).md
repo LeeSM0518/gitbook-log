@@ -82,7 +82,7 @@ coverY: 0
 
 이번에 개발하게 된 비교탐지 기능에 대해 서빙 엔지니어와 같이 프로세스 설계를 진행했다.
 
-<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 
 위와 같이 1차로 프로세스 설계를 마쳤으며 세부적인 내용은 추가 설계가 필요하다.
 
@@ -92,7 +92,7 @@ coverY: 0
 
 사내 서버에 배포하여 사용중인 self-hosted Runner가 다음과 같이 Docker에 문제가 존재하여 CI/CD가 실패하는 문제가 발생하고 있다.
 
-<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 Runner가 처음에는 정상 동작하지만 어느순간 부터 Docker가 동작하지 않는 것으로 확인된다. 백엔드의 모든 서버가 테스트를 수행할 때 Testcontainer를 사용하는데 이로 인한 문제인지 확인이 필요하다. 먼저 실패가 자주 일어나는 gradle build 부분을 self-hosted가 아닌 github-hosted runner를 사용하도록 수정하고 docker build하고 push하는 것만 self-hosted로 수정하여 테스트를 해봤다.
 
