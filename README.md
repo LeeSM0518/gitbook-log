@@ -97,7 +97,7 @@ POLYGON EMPTY
 
 intersection을 수행하기 전에 Geometry가 유효하지 않을 경우 buffor(0.0)를 사용하여 값을 변환한 후에 intersection 하도록 수정했었다. 이 부분이 문제가 발생하므로 해당 기능을 PostGIS를 사용하여 처리되도록 변경을 진행했다.
 
-다음 네이티브 쿼리를 사용하여 intersecton을 수행하도록 변경한 후에 테스트 코드로 검증하고, 도커 이미지를 테스트 서버에 배포하여 영상을 넣었을 때 정상적으로 동작하는 것을 확인했다.
+다음 네이티브 쿼리를 사용하여 intersection을 수행하도록 변경한 후에 테스트 코드로 검증하고, 도커 이미지를 테스트 서버에 배포하여 영상을 넣었을 때 정상적으로 동작하는 것을 확인했다.
 
 ```sql
 select st_intersection(
@@ -116,7 +116,30 @@ select st_intersection(
 
 #### Spring Events 학습
 
+어제 해결을 진행하던 테스트 코드를 이어서 살펴봤다.
 
+```kotlin
+@IntegrationTest
+class CustomSpringEventPublisherTest @Autowired constructor(
+    val eventPublisher: CustomSpringEventPublisher,
+) {
+
+    @MockBean
+    lateinit var eventConsumer: AnnotationDrivenEventListener
+
+    @Captor
+    lateinit var captor: ArgumentCaptor<CustomSpringEvent>
+
+    @Test
+    fun `사용자 정의 이벤트를 발행할 수 있다`(): Unit = runBlocking {
+        val expected = "message"
+        eventPublisher.publishCustomEvent(expected)
+        verify(eventConsumer, times(1)).handleCustomEvent(captor.capture())
+        val actual = captor.value
+        assertThat(actual).isEqualTo(expected)
+    }
+}
+```
 
 
 
