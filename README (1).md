@@ -11,7 +11,7 @@ coverY: 0
 * [x] 회사 업무
   * [x] PR 템플릿 수정
   * [x] 신기능 프로세스 설계
-  * [x] gitflow 수정
+  * [x] CI/CD 버그 해결
 * [x] 사이드 프로젝트
   * [x] Spring Event 학습
 
@@ -88,19 +88,13 @@ coverY: 0
 
 
 
-#### gitflow 수정
+#### CI/CD 버그 해결
 
 사내 서버에 배포하여 사용중인 self-hosted Runner가 다음과 같이 Docker에 문제가 존재하여 CI/CD가 실패하는 문제가 발생하고 있다.
 
 <figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 
-이전에 인프라 팀에서 해결해주기로 했으나 2주 정도 해결이 안되고 있다..
-
-
-
-마냥 기다릴 수만은 없어서 gitflow를 수정하여 해결하는 방법을 진행했다.
-
-먼저 실패가 자주 일어나는 gradle build 부분을 self-hosted가 아닌 github-hosted runner를 사용하도록 수정하고 docker build하고 push하는 것만 self-hosted로 수정하여 테스트를 해봤다.
+Runner가 처음에는 정상 동작하지만 어느순간 부터 Docker가 동작하지 않는 것으로 확인된다. 백엔드의 모든 서버가 테스트를 수행할 때 Testcontainer를 사용하는데 이로 인한 문제인지 확인이 필요하다. 먼저 실패가 자주 일어나는 gradle build 부분을 self-hosted가 아닌 github-hosted runner를 사용하도록 수정하고 docker build하고 push하는 것만 self-hosted로 수정하여 테스트를 해봤다.
 
 <figure><img src=".gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
 
