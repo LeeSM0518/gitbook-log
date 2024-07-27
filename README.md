@@ -116,7 +116,7 @@ select st_intersection(
 
 #### Spring Events 학습
 
-어제 해결을 진행하던 테스트 코드를 이어서 살펴봤다.
+어제 해결하던 테스트 코드를 이어서 살펴봤다.
 
 ```kotlin
 @IntegrationTest
@@ -141,9 +141,106 @@ class CustomSpringEventPublisherTest @Autowired constructor(
 }
 ```
 
+```
+Publishing custom event. 
+capture(...) must not be null
+java.lang.NullPointerException: capture(...) must not be null
+	at io.tutorial.notificationservice.event.publisher.CustomSpringEventPublisherTest3$사용자 정의 이벤트를 발행할 수 있다$1.invokeSuspend(CustomSpringEventPublisherTest3.kt:33)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:104)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:277)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at io.tutorial.notificationservice.event.publisher.CustomSpringEventPublisherTest3.사용자 정의 이벤트를 발행할 수 있다(CustomSpringEventPublisherTest3.kt:30)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+```
+
+위와 같이 예외가 발생하며 이벤트가 수신됐으면 "Handling custom event." 가 출력되지만 해당 문자열이 출력되지 않았으므로 이벤트가 수신되지 않은 것을 알 수 있다. MockBean으로 AnnotationDrivenEventListener를 등록하니 실제 Bean이 아닌 MockBean으로 등록되어 Spring에서 이벤트를 전달하지 않는 것으로 판단된다.
+
+다음과 같이 코드를 수정한 후에 실행해보니 정상적으로 "Handling custom event." 가 출력되는 것을 확인할 수 있었다.
+
+```kotlin
+@IntegrationTest
+class CustomSpringEventPublisherTest3 @Autowired constructor(
+    val eventPublisher: CustomSpringEventPublisher,
+    val applicationContext: ApplicationContext,
+) {
+
+//    @MockBean
+//    lateinit var eventConsumer: AnnotationDrivenEventListener
+
+    @Captor
+    lateinit var captor: ArgumentCaptor<CustomSpringEvent>
+
+    @Test
+    fun `사용자 정의 이벤트를 발행할 수 있다`(): Unit = runBlocking {
+        val expected = "message"
+        eventPublisher.publishCustomEvent(expected)
+//        verify(eventConsumer, times(1)).handleCustomEvent(captor.capture())
+//        val actual = captor.value
+//        assertThat(actual).isEqualTo(expected)
+    }
+}
+```
+
+```
+Publishing custom event.
+Handling custom event.
+```
+
+
+
+Mock을 사용하여 테스트하는 것은 불가능할 것으로 판단되어 다른 방법으로 테스트 하는 것을 진행했다. Event를 테스트 하는 방법에 대해 찾아보던 중, 다음과 같이 @RecordApplicationEvents 와 ApplicationEvents를 활용하여 이벤트가 잘 발행되었는지 확인하는 방법을 찾았다. 이 방법을 사용하여 테스트를 수행해보니 테스트가 성공하는 것을 확인했다.
+
+{% hint style="info" %}
+_**@RecordApplicationEvents**_
+
+Spring 테스트 컨텍스트 프레임워크에서 제공하는 애노테이션으로, 테스트 중 발생하는 이벤트를 기록한다. 이를 통해 테스트 중에 발생하는 이벤트를 쉽게 검증할 수 있다.
+{% endhint %}
+
+{% hint style="info" %}
+_**ApplicationEvents**_
+
+ApplicationEvents는 @RecordApplicationEvents 애노테이션과 함께 사용되며, 테스트 중 기록된 이벤트를 조회하고 검증하는 데 사용된다.
+{% endhint %}
+
+```kotlin
+@IntegrationTest
+@RecordApplicationEvents
+class CustomSpringEventPublisherTest @Autowired constructor(
+    val eventPublisher: CustomSpringEventPublisher,
+) {
+
+    @Autowired
+    lateinit var events: ApplicationEvents
+
+    @Test
+    fun `사용자 정의 이벤트를 발행할 수 있다`(): Unit = runBlocking {
+        // given
+        val expected = "message"
+
+        // when
+        eventPublisher.publishCustomEvent(expected)
+
+        // then
+        val eventList = events.stream(CustomSpringEvent::class.java).toList()
+        assertThat(eventList.size).isEqualTo(1)
+        assertThat(eventList[0].message).isEqualTo(expected)
+    }
+}
+```
+
+위 테스트는 이벤트 발행 로직은 검증할 수 있지만 이벤트 수신 로직을 검증할 수 없어서, 이벤트 수신 로직은 직접 이벤트를 넣어서 호출하는 형태로 테스트를 해야 할 것 같다.
+
 
 
 ## 개선 및 목표
 
-
+* 다음주 월요일에 기관에 출장가서 잘 해결할 수 있도록 코드 준비 및 해결 가이드 정리 필요
+* Spring Events 튜토리얼 완료하기
 
