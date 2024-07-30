@@ -1,43 +1,51 @@
 ---
-description: 일일 회고 4회차
+description: 일일 회고 5회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# ☺️ 2024.07.28
+# 😥 2024.07.29
 
 ## 할일 및 한일
 
+* [x] 회사 업무
+  * [x] 출장
 * [x] 개인 공부
-  * [x] Spring Events 학습
-  * [x] Spring AOP 학습
+  * [x] @Transactional 학습
 
 ## 경험 및 배움
 
+### 회사 업무
+
+#### 출장
+
+기관에 출장가서 영상 입력을 실패하던 버그를 수정한 이미지를 배포한 후에 입력을 실패한 영상들을 다시 넣어보니 정상적으로 입력되는 것을 확인했다. 기관에서 작업할 수 있는 시간이 한정적이다 보니 문제에 대한 정확한 원인을 파악하지 못 하였다. 추후에 기관으로부터 문제가 발생한 데이터들을 전달 받은 후에 사내 서버에 마이그레이션하여 문제의 정확한 원인 파악이 필요하다.
+
+위와 같이 영상 입력 문제는 해결 완료했으나 다음과 같은 새로운 문제들을 발견하였다.
+
+1. 데이터가 700만 개가 존재하여 슬로우 쿼리가 발생
+2. 인퍼런스 결과 저장 실패
+
+첫 번째는 라벨 데이터가 700만 개가 존재하여 해당 데이터를 기반으로 주기적으로 통계 데이터를 저장하는 배치 쿼리가 느려지는 문제이다. 이로 인해 조회 쿼리도 같이 느려져서 시스템이 전반적으로 느려지므로 빠르게 해결이 필요한 문제이다. 두 번째는 영상에서 탐지한 객체를 저장할 때 에러가 발생하는 문제이며 해당 기능은 시스템의 핵심 기능이므로 빠르게 해결이 필요한 문제이다.
+
+이번주에는 두 문제를 해결하는 것을 중점으로 업무를 진행하도록 하자.
+
 ### 개인 공부
 
-#### Spring Events 학습
+#### @Transactional 학습
 
-Spring Events에 대해 학습을 완료하여 다음 링크에 내용을 정리해뒀다.
+다음 글을 참고하여 학습을 진행중이다.
 
-{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/v/jimmys-tech/spring/spring-events" %}
+{% embed url="https://www.baeldung.com/transaction-configuration-with-jpa-and-spring" %}
 
-Spring Events를 학습하면서 _@TransactionalEventListener_ 를 사용하면 트랜잭션에 할당되어 이벤트가 처리되는 것이 있었다. 이 어노테이션을 사용할 경우 정확하게 어떻게 처리되는 것인지는 이해가 잘 되지 않아서, 이해를 돕기 위해 @Transactional 관련 글을 찾아서 해당 어노테이션의 동작 방식을 살펴볼 예정이며 실제 예시를 하나 구현해서 테스트를 해볼 예정이다.
-
-
-
-#### Spring AOP 학습
-
-사이드 프로젝트에서 알림 기능을 Spring Events 와 Spring AOP를 활용하여 구현해보기 위해 Spring AOP 학습을 진행했다.&#x20;
-
-{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/v/jimmys-tech" %}
-
-AOP 학습을 완료하고 고민을 해보니 joinpoint에서 인자 값을 가져올 수 있는지 확인해볼 예정이다. 그 이유는 사용자가 댓글을 남긴 글의 작성자에게 알림을 보내기 위해서는 어떤 사용자가 어떤 작성자에게 알림을 보내야하는지 알아야 하므로 joinpoint에서 사용한 값을 알아야 하기 때문이다.
+글을 다 읽어본 후에 회고를 작성하는 것이 좋을 것 같다.
 
 ## 개선 및 목표
 
 * [ ] 회사 업무
+  * [ ] 700만 개의 라벨 데이터가 존재하는 경우의 슬로우 쿼리 해결
+  * [ ] 인퍼런스 결과 저장 실패 해결
   * [ ] 백엔드 Github Actions 개선
 * [ ] 개인 학습
-  * [ ] @Transactional 분석
-  * [ ] AOP의 Joinpoint 분석
+  * [ ] @Transactional 학습
+  * [ ] AOP의 Joinpoint 학습
