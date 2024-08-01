@@ -8,11 +8,11 @@ coverY: 0
 
 ## 할일 및 한일
 
-* [ ] 회사 업무
-  * [ ] 슬로우 쿼리 해결
-  * [ ] 인퍼런스 결과 저장 실패 해결
-* [ ] 개인 공부
-  * [ ] Spring SSE(Server-Sent Events) 학습
+* [x] 회사 업무
+  * [x] 슬로우 쿼리 해결
+  * [x] 인퍼런스 결과 저장 실패 해결
+* [x] 개인 공부
+  * [x] Spring SSE(Server-Sent Events) 학습
 
 ## 경험 및 배움
 
