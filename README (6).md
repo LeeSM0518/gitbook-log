@@ -1,10 +1,10 @@
 ---
-description: 일일 회고 6회차
+description: 일일 회고 7회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# 😥 2024.07.31
+# 😐 2024.07.31
 
 ## 할일 및 한일
 
