@@ -23,7 +23,7 @@ _**Problem**_
 _**Try**_
 
 1. 일일 회고를 통해 원인을 명확하게 파악하고 문제를 해결했는지 검토
-2. 일일 회고를 통해 최선의 방법을 선택하도록 노력했는지 검토
+2. 일일 회고를 통해 최선의 방법을 선택했는지 검토
 {% endhint %}
 
 ## 오늘 할 일
@@ -52,6 +52,26 @@ Github 자체 Runner로 gradle build를 수행하고 생성된 jar 파일을 캐
 #### 알림 기능 설계
 
 요구사항을 정의하고 데이터 설계를 수행했다.
+
+<table><thead><tr><th width="158">Name</th><th width="170">Column</th><th width="157">Data type</th><th>Key type</th><th>Unique</th><th>Not null</th><th>Note</th></tr></thead><tbody><tr><td>알림 식별자</td><td>notification_id</td><td>uuid</td><td>PK</td><td>O</td><td>O</td><td></td></tr><tr><td>알림 유형</td><td>notification_type</td><td>varchar</td><td></td><td></td><td>O</td><td>REVIEW(리뷰), INQUIRY(문의), ANNOUNCE(공지), PURCHASE(구매), SALES(판매), WITHDRAWAL(출금), COMMENT(댓글)</td></tr><tr><td>내용</td><td>content</td><td>jsonb</td><td></td><td></td><td>O</td><td></td></tr><tr><td>수신자</td><td>receiver_id</td><td>uuid</td><td>FK</td><td></td><td>O</td><td></td></tr><tr><td>생성 날짜</td><td>created_date</td><td>timestamp</td><td></td><td></td><td>O</td><td></td></tr><tr><td>확인 여부</td><td>confirmed</td><td>boolean</td><td></td><td></td><td>O</td><td>default: false</td></tr></tbody></table>
+
+* 어떤 알림인지에 따라 내용이 변경될 수 도 있을 것으로 예상되어 구조를 유연하게 저장할 수 있도록 내용의 타입을 jsonb로 설정했다.
+* 수신자는 공지 알림일 경우 모든 사용자가 확인해야 하므로 nullable로 설정하여 하나만 저장하려 했으나, 사용자의 확인 여부를 판단해야 하므로 not null로 설정했다.
+* 확인 날짜는 사용자가 확인하지 않았을 경우에는 null로 설정하고 확인한 날짜를 저장하려 했으나, 확인한 날짜를 관리할 필요가 없을 것으로 판단되어 boolean으로 설정했다.
+
+{% hint style="info" %}
+_**PostgreSQL의 타입 중에 bool과 boolean의 차이 ?**_
+
+PostgreSQL에는 bool과 boolean 타입이 있으나 bool은 boolean의 별칭을 의미한다.
+
+`SELECT pg_typeof(false::bool)` 과 `SELECT pg_typeof(false::boolean)` 을 실행할 경우 둘 다 `boolean` 이라는 결과가 나오는 것을 통해 증명된다.
+{% endhint %}
+
+
+
+이처럼 설계한 것이 가장 좋은 방법이 아닐 수도 있으니, 다른 사람들은 어떻게 설계했는지 좀 더 조사한 후에 클래스 다이어그램 설계를 진행하자.
+
+
 
 ## 앞으로 할 일
 
