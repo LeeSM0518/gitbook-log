@@ -28,13 +28,40 @@ _**Try**_
 
 ## 오늘 할 일
 
-* [x] 일일 회고 템플릿 수정
+* [x] 개인 학습
+  * [x] 일일 회고 템플릿 수정
+* [ ] 사이드 프로젝트
+  * [ ] CORS 적용
+  * [ ] Paging 코드 수정
 
 ## 경험 및 배움
 
-### 일일 회고 템플릿 수정
+### 개인 학습
 
-기존의 일일 회고 작성 방식은 내가 무엇을 잘 하고 있으며 무엇을 고쳐야 하는지를 상기시키는 것이 부족하다고 생각이 들었다. 그래서 일일 회고에 KPT 회고 방식을 반영하여 지속해서 수행할 것과 문제가 있는 것 그리고 문제를 개선하기 위해 시도할 것을 일일 회고 최상단에 작성해놨다. 이로써 일일 회고를 매일 작성하면서 KPT를 상기시키도록 할 것이다.
+#### 일일 회고 템플릿 수정
+
+기존의 일일 회고 작성 방식은 내가 무엇을 잘 하고 있으며 무엇을 고쳐야 하는지를 상기시키는 것이 부족하다고 생각이 들었다. KPT 회고 방식을 활용하여 지속할 것과 문제가 있는 것 그리고 문제를 개선하기 위해 시도할 것을 일일 회고 템플릿의 최상단에 작성해놨다. 일일 회고를 작성하면서 KPT를 매일 확인함으로써 내가 어떤 것을 유지하고 개선해야 하는지를 상기시킬 것이다.
+
+### 사이드 프로젝트
+
+#### CORS 적용
+
+AWS를 활용하여 사이드 프로젝트를 배포해놨으나 프론트에서 API 호출했을 때 CORS 문제가 발생했다. CORS 문제를 해결하기 위해 다음과 같이 설정을 추가했다.
+
+```kotlin
+@Configuration
+class CorsGlobalConfig : WebFluxConfigurer {
+
+    override fun addCorsMappings(registry: CorsRegistry) {
+        registry
+            .addMapping("/**")
+            .allowedOrigins("http://localhost:3000", "http://localhost:3001")
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            .allowedHeaders("Authorization", "Content-Type", "X-Requested-With")
+            .allowCredentials(true)
+    }
+}
+```
 
 ## 앞으로 할 일
 
