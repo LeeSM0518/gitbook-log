@@ -30,9 +30,9 @@ _**Try**_
 
 * [x] 개인 학습
   * [x] 일일 회고 템플릿 수정
-* [ ] 사이드 프로젝트
-  * [ ] CORS 적용
-  * [ ] Paging 코드 수정
+* [x] 사이드 프로젝트
+  * [x] CORS 적용
+  * [x] Paging 코드 수정
 
 ## 경험 및 배움
 
@@ -63,6 +63,95 @@ class CorsGlobalConfig : WebFluxConfigurer {
 }
 ```
 
+위 코드는 개발 환경에서만 사용되어야 하므로 @Profile을 추가하여 개발 환경에만 적용될 수 있도록 CORS 설정을 수정할 예정이다.
+
+
+
+#### Paging 코드 수정
+
+사이드 프로젝트의 백엔드 서버를 배포하고 GET 요청을 수행하다가 버그를 발견하여 수정 작업을 진행했다. 코드를 확인해보니 다음과 같이 limit을 가져올 때 Pageable 객체로부터 pageSize만 조회하여 잘못된 값이 나오고 있었다.&#x20;
+
+```kotlin
+data class Paging(
+    val value: Pageable,
+) {
+    constructor(
+        page: Page,
+        count: Count,
+    ) : this(
+        value = Pageable
+            .ofSize(count.toIntCount())
+            .withPage(page.toIntPage())
+    )
+    
+    val offset = value.offset.toInt()
+    val limit = value.pageSize
+}
+```
+
+
+
+이를 해결하기 위해 테스트 코드를 작성하고, 테스트가 정상적으로 수행될 수 있도록 코드를 수정했다.
+
+```kotlin
+internal class PagingTest {
+
+    @Test
+    fun `Paging으로부터 offset과 limit을 가져올 수 있다`() {
+        val list = listOf(1, 2, 3, 4)
+        val paging1 = Paging(page = "1", count = "2")
+        val paging2 = Paging(page = "2", count = "2")
+
+        assertThat(list.subList(paging1.offset, paging1.limit)).containsAll(listOf(1, 2))
+        assertThat(list.subList(paging2.offset, paging2.limit)).containsAll(listOf(3, 4))
+    }
+
+    @Test
+    fun `페이지가 0 이하일 경우 예외가 발생한다`() {
+        assertThrows(CommonError.INVALID_PAGE.exception) { Paging(page = "0", count = "2") }
+    }
+
+    @Test
+    fun `개수가 0 이하이며 1000초과일 경우 예외가 발생한다`() {
+        assertThrows(CommonError.INVALID_COUNT.exception) { Paging(page = "1", count = "1001") }
+    }
+}
+```
+
+```kotlin
+data class Paging(
+    val value: Pageable,
+) {
+    constructor(
+        page: Page,
+        count: Count,
+    ) : this(
+        value = Pageable
+            .ofSize(count.toIntCount())
+            .withPage(page.toIntPage() - 1)
+    )
+
+    val offset: Int = value.offset.toInt()
+    val limit: Int = value.pageSize * (value.pageNumber + 1)
+}
+
+private fun Page.toIntPage() =
+    runCatching {
+        this.toInt().takeIf { it > 0 }
+            ?: throw CommonError.INVALID_PAGE.exception
+    }.getOrElse { throw CommonError.INVALID_PAGE.exception }
+
+private fun Count.toIntCount() =
+    runCatching {
+        this.toInt().takeIf { it in 1..1000 }
+            ?: throw CommonError.INVALID_COUNT.exception
+    }.getOrElse { throw CommonError.INVALID_COUNT.exception }
+```
+
+위와 같이 페이징을 적용하는 것 보다 더 좋은 방법이 존재하는지 Webflux와 R2DBC를 사용할 때의 페이징 활용법을 찾아볼 예정이다.
+
+
+
 ## 앞으로 할 일
 
 * [ ] 회사 업무
@@ -74,3 +163,5 @@ class CorsGlobalConfig : WebFluxConfigurer {
 * [ ] 사이드 프로젝트
   * [ ] 알림 기능 설계
   * [ ] Swagger Docs 보완
+  * [ ] @Profile 적용
+  * [ ] Webflux와 R2DBC에서의 페이징 활용법 조사
