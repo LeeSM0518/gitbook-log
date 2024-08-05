@@ -28,9 +28,9 @@ _**Try**_
 
 ## 오늘 할 일
 
-* [ ] 회사 업무
-  * [ ] 백엔드 Github Actions 개선
-  * [ ] 인퍼런스 결과 저장 실패 해결
+* [x] 회사 업무
+  * [x] 백엔드 Github Actions 개선
+  * [x] AI 탐지 결과 저장 실패 해결
 
 ## 경험 및 배움
 
@@ -53,12 +53,33 @@ Github Actions를 개선하여 안정화를 완료했지만 다음과 같이 개
 
 위 항목들은 개선이 되면 좋지만 필수적인 것은 아니므로 틈틈이 시간날 때 마다 개선하도록 하자.
 
+
+
+#### AI 탐지 결과 저장 실패 해결
+
+고객사에서 AI 탐지 결과 저장을 실패하는 문제가 발생하여 원인을 파악하려 했으나 에러 로그가 자세하게 나오지 않아서 파악이 불가능했었다. 이를 해결하기 위해 AI 탐지 결과를 저장하는 로직들에 상세하게 에러 로그가 남도록 다음과 같이 여러 곳에 로깅을 남겨놓았다.
+
+```kotlin
+runCatching {
+    // 수행 로직
+}.getOrElse { exception ->
+    logger.error { "발생한 문제 [ 파라미터 : $parameter ]" }
+    throw exception
+}
+```
+
+
+
+위와 같이 수정한 후에 테스트 서버에 배포해보니 해당 서버에서도 문제가 발생하고 있는걸 알 수 있었다. 고객사와 유사한 문제일 것으로 판단되어 해당 문제의 원인 을 파악한 후에 해결을 진행할 예정이다.
+
+
+
 ## 앞으로 할 일
 
 * [ ] 회사 업무
   * [x] 백엔드 Github Actions 개선
   * [ ] LWLock 발생 원인 및 해결 방법 분석
-  * [ ] Github Actions 추가 개선
+  * [ ] Github Actions 추가 개선 (ref. [백엔드 Github Actions 개선](https://jimmyblog.gitbook.io/jimmys-blog/v/jimmys-log#undefined-2))
 * [ ] 개인 학습
   * [ ] AOP의 Joinpoint 분석
   * [ ] @Transactional 동작원리 학습
