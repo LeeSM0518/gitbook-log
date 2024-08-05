@@ -36,13 +36,29 @@ _**Try**_
 
 ### 회사 업무
 
-모든 저장소에&#x20;
+#### 백엔드 Github Actions 개선
+
+모든 저장소의 Github Actions를 개선을 완료하고 자동 배포 Action을 실행해봤을 때 모두 정상적으로 완료되는 것을 확인했다.
+
+<figure><img src=".gitbook/assets/image (12).png" alt=""><figcaption></figcaption></figure>
+
+Github Actions를 개선하여 안정화를 완료했지만 다음과 같이 개선할 것은 많이 보인다.
+
+1. 캐시를 활용하여 빌드 속도 개선
+2. self-hosted Runner의 문제를 해결한 후 Github 자체 Runner를 사용하지 않도록 수정
+3. 자동 배포가 전부 완료됐을 때 released 라벨을 남기도록 수정
+4. 이미지를 배포할 경우 배포된 커밋에 tag 남기도록 수정
+5. 이미지를 배포할 커밋에 tag가 남아 있을 경우 배포를 수행하지 않도록 수정
+6. 배포시 Release Draft 남기도록 수정
+
+위 항목들은 개선이 되면 좋지만 필수적인 것은 아니므로 틈틈이 시간날 때 마다 개선하도록 하자.
 
 ## 앞으로 할 일
 
 * [ ] 회사 업무
-  * [ ] 백엔드 Github Actions 개선
+  * [x] 백엔드 Github Actions 개선
   * [ ] LWLock 발생 원인 및 해결 방법 분석
+  * [ ] Github Actions 추가 개선
 * [ ] 개인 학습
   * [ ] AOP의 Joinpoint 분석
   * [ ] @Transactional 동작원리 학습
