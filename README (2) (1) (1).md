@@ -130,7 +130,7 @@ jobs:
 
 이처럼 yaml을 수정한 후에 배포하여 테스트 해보니 정상적으로 동작하는 것으로 확인됐다.
 
-<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
 
 gateway 저장소에 반영을 완료했으니 나머지 저장소들에도 반영한 후에 전체 저장소에 대해서 CI/CD를 수행하는 테스트를 해볼 예정이다.
 
