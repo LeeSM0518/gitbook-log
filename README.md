@@ -1,10 +1,10 @@
 ---
-description: 일일 회고 18회차
+description: 일일 회고 19회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# 🙂 2024.08.12
+# 🙂 2024.08.13
 
 {% hint style="success" %}
 _**Keep**_
@@ -28,146 +28,31 @@ _**Try**_
 
 ## 오늘 할 일
 
-* [x] 회사 업무
-  * [x] 신기능 개발 공수 산정
-* [x] 개인 학습
-  * [x] WebFlux와 R2DBC를 활용한 페이징 사용 조사
-* [x] 사이드 프로젝트
-  * [x] 알림 읽음 상태 변경 구현
+* [ ] 회사 업무
+  * [ ] 고객사 요청 작업 대응
+  * [ ] 신기능 디자인 리뷰 회의
+* [ ] 사이드 프로젝트
+  * [ ] 알림 읽음 상태 변경 테스트 구현
 
 ## 경험 및 배움
 
 ### 회사 업무
 
-#### 신기능 개발 공수 산정
+#### 고객사 요청 작업 대응
 
-신기능 개발에 대해 작업이 필요한 항목들을 정리하고 개발 공수를 산정하는 작업을 완료했다.
+* 고객사의 AI 모델을 저장할 때 식별자를 숫자로 하는 것이 맞는지 고민
+* 우리 쪽에서도 모델에 대한 식별자를 숫자로 하고 있음
+* 고객사에서 직접 만든 모델에 대해 식별자를 숫자로 할 경우 해당 숫자를 앞으로 사용하지 못 함
+* UUID를 사용하고 싶으나 AI 서버에서 식별자를 숫자로 처리하고 있어서 어려움이 있음
+* _**우리 쪽에서 전혀 사용되지 않을 음수를 사용하는 것에 대해 제안 필요**_
 
-공수를 예측할 때 자신이 생각하는 것 보다 1.5를 곱하여 어느정도 여유를 두어야 하는 것으로 알고 있지만 1.5를 곱하지는 않았다. 왜냐하면 신기능을 개발하고 납품하기 까지 3달이 남았기 때문에 1.5를 곱할 경우 3달을 훨씬 초과하여 여유를 두지는 못 했다.
+#### 신기능 디자인 리뷰 회의
 
-일정이 너무 촉박하여 미리 설계하고 개발하고 싶지만 기획과 디자인이 완성된 상태가 아니라 고민이 많이 되고 있다. 기획과 디자인이 완료되는 것은 9월 초로 잡혀 있지만 현재 어느정도 기획과 디자인이 나와 있으므로 이를 바탕으로 설계와 개발을 진행할 예정이다.
-
-### 개인 학습
-
-#### WebFlux와 R2DBC를 활용한 페이징 사용 조사
-
-WebFlux와 R2DBC에서 Pagination을 사용하는 Baeldung 글을 보고 다음 개인 블로그에 정리를 완료했다.
-
-{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/v/jimmys-tech/spring/pagination" %}
-
-Baeldung 글에 Pagination 관련 개념과 예제가 간단하게만 적혀 있어서, 예제를 그대로 수행하지 않고 기존에 만들고 있던 알림 서비스에 Pagination을 적용하면서 예제를 익혔다. 핵심은 다음과 같다.
-
-1. CoroutineCrudRepository에서 데이터를 조회할 때 pageable로 조회하며 Flow로 반환하는 것
-
-```kotlin
-@Repository
-interface NotificationRepository : CoroutineCrudRepository<NotificationEntity, UUID> {
-
-    suspend fun findAllByReceiverIdOrderByNotifiedDateDesc(
-        receiverId: UUID,
-        pageable: Pageable,
-    ): Flow<NotificationEntity>
-
-}
-```
-
-
-
-2. PageRequest.of 를 사용하여 Pageable 객체를 생성하는 것
-
-```kotlin
-data class GetNotificationsRequest(
-    val memberId: UUID,
-    private val page: Int,
-    private val size: Int,
-) {
-    val pageable: Pageable = PageRequest.of(page, size)
-}
-```
-
-
-
-3. PageImpl 객체를 생성하여 Page 객체로 반환하는 것
-
-```kotlin
-@Service
-class NotificationQueryService(
-    private val loadNotificationPort: LoadNotificationPort,
-) : GetNotificationUseCase {
-
-    override suspend fun getNotifications(request: GetNotificationsRequest): Page<NotificationResponse> {
-        val notifications = loadNotificationPort.loadNotifications(request).map { it.toResponse() }
-        val count = loadNotificationPort.loadCount(request.memberId)
-        return PageImpl(notifications.toList(), request.pageable, count)
-    }
-
-}
-```
-
-
-
-4. Page 객체를 사용자 정의 객체로 변환한 후에 사용자에게 응답하는 것
-
-```kotlin
-data class PageResponse<T>(
-    val data: List<T>,
-    val pageable: PageableResponse,
-) {
-    companion object {
-        fun <T> Page<T>.toResponse() =
-            PageResponse(
-                data = this.content,
-                pageable = this.toPageable(),
-            )
-    }
-
-    data class PageableResponse(
-        val totalPages: Int,
-        val totalElements: Long,
-    ) {
-        companion object {
-            fun Page<*>.toPageable() =
-                PageableResponse(
-                    totalPages = this.totalPages,
-                    totalElements = this.totalElements
-                )
-        }
-    }
-}
-```
-
-
-
-위 내용들을 기반으로 알림 서비스에 적용했으며 다른 사이드 프로젝트에도 적용하면 좋을 것 같다.
-
-
+* 모델 재학습 신기능 구현에 대한 디자인 리뷰 회의 진행
+* 많은 내용이 오갔지만 대용량 데이터셋을 어떻게 업로드 할 것 인지에 대한 추가 논의 필요
+* _**대용량 파일을 어떻게 처리하는 것이 효율적일지 조사 필요**_
 
 ### 사이드 프로젝트
-
-#### 알림 읽음 상태 변경 구현
-
-알림 서비스에 알림 읽음 상태를 변경하는 기능을 구현하는 것을 진행했다. 이 기능을 구현하면서 딱히 어려운 점은 없었으나 API를 어떻게 구성하는 것이 좋을지 고민이 되었다.&#x20;
-
-처음에는 단일 알림만 읽음 상태로 변경하는 API와 요청자의 읽지 않은 모든 알림의 읽음 상태를 변경하는 API를 나눠서 개발하는 것을 생각했다. 하지만 두 API의 처리 로직이 유사하여 굳이 API를 두 번 만들지 않고 요청 값에 따라 하나의 알림 상태를 변경하거나 모든 알림 상태를 변경하도록 구성이 가능할 것으로 판단되어 이와 같이 작업을 진행했다.
-
-다음과 같이 API를 구성하여 경로에 알림 식별자가 존재할 경우 해당 알림의 상태만 변경하고 알림 식별자가 존재하지 않을 경우 모든 알림의 상태를 변경하도록 구현했다.
-
-```kotlin
-@PatchMapping("/notifications/{notificationId}/checked")
-suspend fun checkNotifications(
-    @RequestHeader(AUTHORIZATION)
-    authorization: String,
-    @PathVariable("notificationId", required = false)
-    notificationId: UUID?,
-): CheckNotificationResponse {
-    val memberId: UUID = getMemberUseCase.getMemberIdBy(authorization)
-    val request = CheckNotificationsRequest(memberId, notificationId)
-    val count: Int = modifyNotificationUseCase.check(request)
-    return CheckNotificationResponse(count)
-}
-```
-
-추후에도 수정이나 삭제 작업을 단일로 하거나 모두로 할 경우 이 방법을 사용하면 될 것 같다.
 
 
 
@@ -180,7 +65,6 @@ suspend fun checkNotifications(
 * [ ] 개인 학습
   * [ ] AOP의 Joinpoint 분석
   * [ ] @Transactional 동작원리 학습
-  * [x] Webflux와 R2DBC에서의 페이징 활용법 조사
 * [ ] 사이드 프로젝트
   * [ ] Swagger Docs 보완
   * [ ] @Profile 적용
