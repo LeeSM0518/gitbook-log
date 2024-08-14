@@ -1,10 +1,10 @@
 ---
-description: 일일 회고 19회차
+description: 일일 회고 20회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# 🙂 2024.08.13
+# 🙂 2024.08.14
 
 {% hint style="success" %}
 _**Keep**_
@@ -29,28 +29,68 @@ _**Try**_
 ## 오늘 할 일
 
 * [x] 회사 업무
-  * [x] 고객사 요청 작업 대응
-  * [x] 신기능 디자인 리뷰 회의
-* [x] 사이드 프로젝트
-  * [x] 알림 읽음 상태 변경 테스트 구현
+  * [x] LWLock 발생 원인 및 해결 방법 분석
+  * [x] 주기적으로 실행하는 로직에 Timer 적용
+* [ ] 사이드 프로젝트
+  * [ ] 알림 읽음 상태 변경 테스트 구현
 
 ## 경험 및 배움
 
 ### 회사 업무
 
-#### 고객사 요청 작업 대응
+#### LWLcok 발생 원인 및 해결 방법 분석
 
-* 고객사의 AI 모델을 저장할 때 식별자를 숫자로 하는 것이 맞는지 고민
-* 우리 쪽에서도 모델에 대한 식별자를 숫자로 하고 있음
-* 고객사에서 직접 만든 모델에 대해 식별자를 숫자로 할 경우 해당 숫자를 앞으로 사용하지 못 함
-* UUID를 사용하고 싶으나 AI 서버에서 식별자를 숫자로 처리하고 있어서 어려움이 있음
-* _**우리 쪽에서 전혀 사용되지 않을 음수를 사용하는 것에 대해 제안 필요**_
+* [29CM 팀의 PostgreSQL Autovacuum 장애 대응기 글](https://medium.com/29cm/postgresql-autovacuum-%EC%9E%A5%EC%95%A0-%EB%8C%80%EC%9D%91%EA%B8%B0-1-8284955c0193)을 보고 LWLock 발생 원인을 유추할 수 있게 됨
+  * 회사 시스템에 특정 테이블을 주기적으로 초기화하고 데이터를 다시 넣는 스케줄링이 있음
+  * 테이블이 초기화될 경우 dead tuple이 발생하여 Autovacuum이 동작함
+  * _**vacuum이 실행되면서 block된 row들이 생겨 LWLock이 발생하게 됨**_
+* 위 내용은 추측이므로 문제가 재현될 경우 명확한 원인 파악 필요
 
-#### 신기능 디자인 리뷰 회의
+#### 주기적으로 실행하는 로직에 Timer 적용
 
-* 모델 재학습 신기능 구현에 대한 디자인 리뷰 회의 진행
-* 많은 내용이 오갔지만 대용량 데이터셋을 어떻게 업로드 할 것 인지에 대한 추가 논의 필요
-* _**대용량 파일을 어떻게 처리하는 것이 효율적일지 조사 필요**_
+* 스케줄링을 10초에 한 번씩 실행되어 시스템이 전반적으로 느려지는 문제 발생
+* 스케줄링을 하루에 한 번씩 실행되도록 수정이 요구됨
+* 기존의 스케줄링 로직은 서버가 실행될 경우 바로 스케줄링을 실행하는 로직이였음
+  * while (true) 의 실행문에서 delay를 추가한 로직
+* 사용자가 사용하는 시간과 스케줄링이 수행되는 시간을 완전히 분리하기 위해 자정 시간에 실행되도록 수정
+  * java.util.Timer 객체를 활용하여 자정 시간에 실행되도록 수정
+
+```kotlin
+private const val SCENE_LABEL_VIEW_CACHE_TIME = 24 * 60 * 60 * 1000L
+
+private fun cacheSceneLabelView() {
+    val timer = Timer()
+    val midnight = getNextMidnight()
+    logger.info { "SceneLabelView 업데이트 스케줄링 시작 (한국 시간 기준 매일 자정에 수행)" }
+    timer.scheduleAtFixedRate(midnight, SCENE_LABEL_VIEW_CACHE_TIME) {
+        CoroutineScope(Dispatchers.IO).launch {
+            logger.info { "SceneLabelView 업데이트 시작" }
+            runCatching {
+                injector().get<SceneLabelViewRepository>().use { it.refresh() }
+            }.onSuccess {
+                logger.info { "SceneLabelView 업데이트 완료" }
+            }.onFailure {
+                logger.error(it) { "SceneLabelView 업데이트 실패" }
+            }
+        }
+        delay(Duration.ofSeconds(SCENE_LABEL_VIEW_CACHE_TIME))
+    }
+}
+
+private fun getNextMidnight(): Date {
+    val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
+    calendar.set(Calendar.HOUR_OF_DAY, 0)
+    calendar.set(Calendar.MINUTE, 0)
+    calendar.set(Calendar.SECOND, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
+
+    if (calendar.time.before(Date())) {
+        calendar.add(Calendar.DAY_OF_MONTH, 1)
+    }
+
+    return calendar.time
+}
+```
 
 
 
@@ -58,41 +98,14 @@ _**Try**_
 
 #### 알림 읽음 상태 변경 테스트 구현
 
-* 알림 읽음 상태 변경 API를 "/notifications/{notificationId}/checked" 로 정의
-  * 해당 API로 단일 알림과 모든 알림의 읽음 상태를 변경하도록 구현함
-  * 통합 테스트를 구현하여 실행 해보니 테스트가 실패하여 원인 파악 필요
-
-```kotlin
-@Test
-    fun `읽지 않은 모든 알림의 읽음 상태를 변경 요청할 수 있다`() = runTest {
-        // given
-        val memberId = expected.receiverId.toString()
-
-        // when
-        val count = webTestClient
-            .patch()
-            .uri("/notifications//checked")
-            .accept(APPLICATION_JSON)
-            .header(AUTHORIZATION, memberId)
-            .exchange()
-            .expectBody<CheckNotificationResponse>()
-            .returnResult()
-            .responseBody!!
-            .count
-
-        // then
-        assertThat(count).isOne()
-    }
-```
-
 
 
 ## 앞으로 할 일
 
 * [ ] 회사 업무
-  * [ ] LWLock 발생 원인 및 해결 방법 분석
-  * [ ] Github Actions 추가 개선 (ref. [백엔드 Github Actions 개선](https://jimmyblog.gitbook.io/jimmys-blog/v/jimmys-log#undefined-2))
-  * [ ] 주기적으로 실행하는 로직에 Timer 적용
+  * [x] LWLock 발생 원인 및 해결 방법 분석
+  * [ ] Github Actions 추가 개선 (ref. [백엔드 Github Actions 개선](https://jimmyblog.gitbook.io/jimmys-blog/v/jimmys-log/daily-log-2024/2024.08.05#github-actions))
+  * [x] 주기적으로 실행하는 로직에 Timer 적용
 * [ ] 개인 학습
   * [ ] AOP의 Joinpoint 분석
   * [ ] @Transactional 동작원리 학습
