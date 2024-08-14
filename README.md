@@ -28,11 +28,11 @@ _**Try**_
 
 ## 오늘 할 일
 
-* [ ] 회사 업무
-  * [ ] 고객사 요청 작업 대응
-  * [ ] 신기능 디자인 리뷰 회의
-* [ ] 사이드 프로젝트
-  * [ ] 알림 읽음 상태 변경 테스트 구현
+* [x] 회사 업무
+  * [x] 고객사 요청 작업 대응
+  * [x] 신기능 디자인 리뷰 회의
+* [x] 사이드 프로젝트
+  * [x] 알림 읽음 상태 변경 테스트 구현
 
 ## 경험 및 배움
 
@@ -52,7 +52,38 @@ _**Try**_
 * 많은 내용이 오갔지만 대용량 데이터셋을 어떻게 업로드 할 것 인지에 대한 추가 논의 필요
 * _**대용량 파일을 어떻게 처리하는 것이 효율적일지 조사 필요**_
 
+
+
 ### 사이드 프로젝트
+
+#### 알림 읽음 상태 변경 테스트 구현
+
+* 알림 읽음 상태 변경 API를 "/notifications/{notificationId}/checked" 로 정의
+  * 해당 API로 단일 알림과 모든 알림의 읽음 상태를 변경하도록 구현함
+  * 통합 테스트를 구현하여 실행 해보니 테스트가 실패하여 원인 파악 필요
+
+```kotlin
+@Test
+    fun `읽지 않은 모든 알림의 읽음 상태를 변경 요청할 수 있다`() = runTest {
+        // given
+        val memberId = expected.receiverId.toString()
+
+        // when
+        val count = webTestClient
+            .patch()
+            .uri("/notifications//checked")
+            .accept(APPLICATION_JSON)
+            .header(AUTHORIZATION, memberId)
+            .exchange()
+            .expectBody<CheckNotificationResponse>()
+            .returnResult()
+            .responseBody!!
+            .count
+
+        // then
+        assertThat(count).isOne()
+    }
+```
 
 
 
