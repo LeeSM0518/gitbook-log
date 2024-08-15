@@ -116,7 +116,7 @@ val count = webTestClient
             .uri("/notifications/checked")
             // ...
 
-// 읽지 않은 특정 알림의 읽음 상태 변경 테스
+// 읽지 않은 특정 알림의 읽음 상태 변경 테스트
 val count = webTestClient
             .patch()
             .uri("/notifications/${expected.id}/checked")
