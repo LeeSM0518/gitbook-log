@@ -73,7 +73,6 @@ private fun cacheSceneLabelView() {
                 logger.error(it) { "SceneLabelView 업데이트 실패" }
             }
         }
-        delay(Duration.ofSeconds(SCENE_LABEL_VIEW_CACHE_TIME))
     }
 }
 
