@@ -1,10 +1,10 @@
 ---
-description: 일일 회고 22회차
+description: 일일 회고 23회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# 🙂 2024.08.20
+# 🙂 2024.08.21
 
 {% hint style="success" %}
 _**Keep**_
@@ -29,34 +29,28 @@ _**Try**_
 ## 오늘 할 일
 
 * [x] 회사 업무
-  * [x] 파드들이 가끔씩 다운되는 문제 해결
-  * [x] 영상의 썸네일 생성 실패 해결
+  * [x] 영상 입력 실패 해결
+  * [x] 썸네일 생성 실패 해결
 
 ## 경험 및 배움
 
 ### 회사 업무
 
-#### 파드들이 가끔씩 다운되는 문제 해결
+#### 영상 입력 실패 해결
 
-* 파드들이 주기적으로 ContainerStatusUnknown 상태로 변하고 다운됨
-* describe를 해보니 다음과 같은 메시지가 띄워져 있음
-  * The node was low on resource: ephemeral-storage. Container ovision-server was using 3108Ki, which exceeds its request of 0.
-* 인프라팀에 확인 요청 후 다음과 같이 pod의 자원을 변경 요청
-  * resources
-    * requests
-      * ephemeral-storage : 500Mi
-    * limits
-      * ephemeral-storage : 1Gi
-* deployment 파드들의 resource를 위와 같이 변경
+* 영상과 관심지역을 intersection 하면 GeometryCollection 객체가 생성되어 에러 발생
+  * intersection 로직이 Polygon이나 MultiPolygon 일 경우에만 처리하도록 되어 있음
+  * GeometryCollection일 경우 내부 Geometry 목록을 조회한 후 각 Geometry의 area를 추출하여 해당 값을 모두 더하도록 수정
+  * Polygon이나 MultiPolygon이 아닌 GeometryCollection 객체가 생성된 이유 파악 필요
 
 
 
-#### 영상의 썸네일 생성 실패 해결
+#### 썸네일 생성 실패 해결
 
-* 영상이 3밴드 영상이지만 메타데이터에는 Gray로 되어 있으므로 데이터 자체에 문제가 있는 것으로 판단
-* 데이터 엔지니어에게 RGB로 넣는 작업을 요청
-* RGB로 변경된 영상을 저장하니 red, green, blue, alpha 가 존재하여 프론트에서 영상 조회를 실패함
-* 현재 상황과 해결 방안을 정리하여 팀원들과 논의하여 해결 방향을 결정
+* 영상을 png 타입으로 썸네일을 조회할 경우 밴드별 색상 정보가 잘못 입력되어 있으면 에러가 발생하는 것을 확인 (ex. Gray, Undefined, Undefined, Undefined)
+* 색상 정보를 Red, Green, Blue, Alpha로 변경했더니 UI에서 영상이 조회되지 않는 문제 발생
+* 문제 해결 방법에 대해 논의하여 임시로 Red, Green, Blue, Undefined로 설정하기로 결정
+* 이번주 내로 데모를 수행해야 하므로 빠르게 입력한 후에 원인 파악과 문제 해결을 하기 위함
 
 
 
