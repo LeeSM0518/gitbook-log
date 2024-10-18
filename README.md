@@ -1,10 +1,10 @@
 ---
-description: 일일 회고 26회차
+description: 일일 회고 27회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# 🙂 2024.10.16
+# 🙂 2024.10.17
 
 {% hint style="success" %}
 _**Keep**_
@@ -30,8 +30,7 @@ _**Try**_
 
 * [x] 회사 업무
   * [x] 대량 변화 탐지시 조회 성능 측정
-* [x] 사이드 프로젝트
-  * [x] 알림 기능 구현
+  * [x] 변화탐지 모델 연동
 
 ## 경험 및 배움
 
@@ -39,116 +38,21 @@ _**Try**_
 
 #### 대량 변화 탐지시 조회 성능 측정
 
-변화탐지 AI 모델을 사용해서 15000x15000 크기의 영상 두 개를 비교했을 때 약 **100MB 크기의 탐지 결과**가 저장되는 것을 확인했다. 100MB 탐지 결과를 프론트에서 그대로 보여주면 **조회 속도가 매우 느릴 것으로 예상**됐다. 변화 탐지 결과를 조회하는 기능이 정상적으로 동작할 수 있는지 확인하기 위해 **조회 성능 측정**을 진행했다.
+20MB 크기의 Geometry 정보를 문자열로 변환하여 조회했을 때 1초 미만의 시간이 소요되는 것을 확인했다. 이는 데이터가 너무 커서 오래 걸리는 것이 아니라 **쿼리에 문제가 있다는 것으로 판단**됐다. 조회 쿼리의 어느 부분에서 지연이 발생하는지 분석을 진행했으며 두 Geometry 정보의 교차 영역을 계산하는 **st\_intersection 함수에서 지연이 발생**하는 것을 발견했다.
 
-먼저 랜덤하게 변화 탐지 결과를 생성하여 약 **20MB 크기로 테스트 데이터를 구성**했다. 그 후 테스트 서버의 데이터베이스에 **테스트 데이터를 저장**한 후 해당 결과를 조회하는 API를 호출했다. API가 1분 이상 소요되어 **504(Gateway Timeout) 에러가 발생**했다.
+이러한 이유는 MultiPolygon에 **대량의 Polygon 정보를 모두 교차 영역 계산을 수행**하고 하나의 MultiPolygon으로 다시 합치는 **연산이 오래 걸리는 것**으로 판단됐다. 쿼리의 성능을 올리기 위해서 **st\_intersection 함수의 연산 비용을 줄이는 방법**을 찾고 고민해 봤다.&#x20;
 
-정확하게 어느 로직에서 오랜 시간이 소요되는지 확인하기 위해 20MB 크기의 변화 탐지 결과를 저장하고 조회하는 **테스트 코드를 작성한 후 소요 시간을 확인**했다. Repository에서 쿼리를 통해 **데이터베이스에서 데이터를 불러올 때 50초 이상 소요**되는 것을 확인했다.&#x20;
+첫 번째 해결 방법으로 st\_intersection 할 데이터의 크기를 줄이는 것을 생각해냈다. 공간 객체의 좌표를 지정한 그리드 크기로 스냅(정렬)시켜, 좌표값을 단순화하는 함수인 **st\_snaptogrid 를 사용하여 데이터의 크기를 줄이고** 사용자가 보고 있는 **특정 영역의 데이터만 조회되도록 st\_intersection** 하는 방법이다. 이 방법이 **성능이 잘 나오고 해결 방법으로 적절한지는 검증**이 필요하다.
 
-20MB 크기의 데이터를 데이터베이스에서 조회하는 것이 단순히 크기가 커서 오래 걸리는 것인지 아니면 **Geometry 정보이기 때문에 느린 것인지 확인이 필요**하다. 20MB인 일반 문자열을 조회했을 때 빠르게 조회될 경우 일반 문자열로 조회하도록 변경하기 위함이다.
+두 번째 해결 방법으로 **Geometry 컬럼에 공간 인덱스를 설정**하는 것이다. 하지만 공간 인덱스를 설정하는 것으로 인해 MultiPolygon 하나의 값에 대해 **st\_intersection 하는 것이 개선이 될지는 모르겠다**. 공간 인덱스를 설정했을 때 **어떤 연산이 이루어지며 실제로 개선이 되는지를 검증해 볼 필요**가 있다.
 
 
 
-### 사이드 프로젝트
+#### 변화탐지 모델 연동
 
-#### 알림 기능 구현
+기존에는 변화탐지를 수행할 경우 API 서버에서 랜덤 데이터를 생성하여 저장하도록 구현했다. 이후 모델 서빙 서버에 모델 탑재가 되어 **랜덤 데이터를 생성하던 로직을 제거하고 실제로 서빙 서버에 변화탐지 요청을 보내도록 수정**했다.&#x20;
 
-사용자가 구매한 전자책을 리뷰하거나 리뷰에 댓글을 작성할 때 **이벤트를 발행하여 알림을 저장하도록 구현**하는 것을 진행했다. 이벤트 발행 로직은 대부분 비슷하며 다음과 같이 **데이터를 조회하고 이벤트를 생성한 후 발행**하도록 구현했다.
-
-```kotlin
-@Component
-class ReviewEventService(
-    private val memberService: MemberService,
-    private val ebookService: EbookService,
-    private val publisher: ApplicationEventPublisher,
-) {
-
-    suspend fun publish(review: Review) {
-        val member = memberService.findById(review.writerMemberId)
-        val ebook = ebookService.findById(review.ebookId)
-        val createReviewEvent = CreateReviewEvent(
-            reviewId = review.id,
-            reviewerName = member.nickname,
-            ebookId = ebook.id,
-            ebookTitle = ebook.title,
-            writtenDate = review.writtenDate,
-            receiverId = ebook.sellingMemberId
-        )
-        publisher.publishEvent(createReviewEvent)
-    }
-}
-```
-
-이처럼 서비스 객체가 다른 서비스 객체를 호출하도록 했으며, Spring의 ApplicationEventPublisher 객체를 활용해 이벤트를 발행했다. 유지보수 측면에서 더 좋은 코드 구조를 고민해봤으나 **먼저 개발을 완료하고 배포한 후에 리팩토링을 진행하기로 결정**했다.
-
-&#x20;그 후, 알림을 저장하고 조회하는 부분을 조금 수정했다. 기존에는 알림 내용이 어떤 알림인지에 따라 달라질 수 있으므로 알림 객체를 Json으로 변환한 후 Json을 String으로 DB에 저장하도록 구현했다. 하지만 String으로 프론트에 전달할 경우 값을 다루기 힘들 것으로 예상되어 **Map 타입으로 저장하고 응답하도록 수정**을 진행했다.
-
-다음과 같이 **두 컨버터를 추가하고 R2DBC 설정 클래스에 등록해준 후 저장 타입을 변경**했다. 기존의 테스트 코드를 돌려보니 정상 동작하는 것을 볼 수 있었다.&#x20;
-
-```kotlin
-@Component
-@ReadingConverter
-class JsonToMapConverter(
-    private val objectMapper: ObjectMapper
-) : Converter<Json, Map<String, Any>> {
-
-    override fun convert(source: Json): Map<String, Any> =
-        objectMapper.readValue(source.asString())
-}
-```
-
-```kotlin
-@Component
-@WritingConverter
-class MapToJsonConverter(
-    private val objectMapper: ObjectMapper
-) : Converter<Map<String, Any>, Json> {
-
-    override fun convert(source: Map<String, Any>): Json =
-        Json.of(objectMapper.writeValueAsString(source))
-}
-```
-
-```kotlin
-@Configuration
-@EnableR2dbcRepositories
-class R2dbcConfiguration(
-    private val databaseConfig: DatabaseConfig,
-    private val customConverters: List<Converter<*, *>>,
-) : AbstractR2dbcConfiguration() {
-
-    override fun connectionFactory(): ConnectionFactory =
-        ConnectionFactories.get(
-            ConnectionFactoryOptions
-                .builder()
-                .option(ConnectionFactoryOptions.DRIVER, databaseConfig.driver)
-                .option(ConnectionFactoryOptions.PROTOCOL, databaseConfig.protocol)
-                .option(ConnectionFactoryOptions.HOST, databaseConfig.host)
-                .option(ConnectionFactoryOptions.PORT, databaseConfig.port.toInt())
-                .option(ConnectionFactoryOptions.DATABASE, databaseConfig.database)
-                .option(ConnectionFactoryOptions.USER, databaseConfig.username)
-                .option(ConnectionFactoryOptions.PASSWORD, databaseConfig.password)
-                .build()
-        )
-
-    override fun r2dbcCustomConversions(): R2dbcCustomConversions =
-        R2dbcCustomConversions(storeConversions, customConverters)
-
-    @Bean
-    fun initializer(): ConnectionFactoryInitializer =
-        ConnectionFactoryInitializer()
-            .apply {
-                setConnectionFactory(connectionFactory())
-                setDatabasePopulator(ResourceDatabasePopulator(ClassPathResource("schema.sql")))
-            }
-}
-```
-
-```kotlin
-typealias NotificationNote = Map<String, String>
-```
-
-그 다음으로는 이벤트를 발행한 것이 알림으로 잘 저장되었는지 확인하는 테스트 코드를 작성할 것이다.
+수정된 서버를 테스트 서버에 배포한 후에 작은 영상 두 개를 변화탐지 했을 때 정상 동작하는 것을 확인했다. 하지만 큰 용량의 영상 두 개를 변화탐지 했을 때 AI 모델에서 OOM이 발생하는 것을 발견했다. ML 엔지니어의 의견으로는 패치로 자른 데이터를 리스트에 그대로 축적하여 메모리가 터지는 것 같다고 하셨다. 해당 문제를 ML 엔지니어가 해결한 후에 다시 테스트를 할 것이다.
 
 
 
@@ -156,7 +60,9 @@ typealias NotificationNote = Map<String, String>
 
 * [ ] 회사 업무
   * [ ] 대량 변화 탐지시 조회 성능 측정
-    * [ ] 일반 문자열로 조회시 속도 확인
+    * [x] 일반 문자열로 조회시 속도 확인
+    * [ ] st\_snaptogrid 방식의 해결 방법 검증
+    * [ ] 공간 인덱스 검증
   * [ ] 대량 변화 탐지시 조회 성능 개선
 * [ ] 사이드 프로젝트
   * [ ] 알림 기능 테스트 구현
