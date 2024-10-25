@@ -1,10 +1,10 @@
 ---
-description: 일일 회고 22회차
+description: 일일 회고 28회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# 🙂 2024.08.20
+# 🙂 2024.10.18
 
 {% hint style="success" %}
 _**Keep**_
@@ -29,47 +29,39 @@ _**Try**_
 ## 오늘 할 일
 
 * [x] 회사 업무
-  * [x] 파드들이 가끔씩 다운되는 문제 해결
-  * [x] 영상의 썸네일 생성 실패 해결
+  * [x] 대량 변화 탐지시 조회 성능 측정
 
 ## 경험 및 배움
 
 ### 회사 업무
 
-#### 파드들이 가끔씩 다운되는 문제 해결
+#### 대량 변화 탐지시 조회 성능 측정
 
-* 파드들이 주기적으로 ContainerStatusUnknown 상태로 변하고 다운됨
-* describe를 해보니 다음과 같은 메시지가 띄워져 있음
-  * The node was low on resource: ephemeral-storage. Container ovision-server was using 3108Ki, which exceeds its request of 0.
-* 인프라팀에 확인 요청 후 다음과 같이 pod의 자원을 변경 요청
-  * resources
-    * requests
-      * ephemeral-storage : 500Mi
-    * limits
-      * ephemeral-storage : 1Gi
-* deployment 파드들의 resource를 위와 같이 변경
+**GIST 공간 인덱스를 생성**한 후에 st\_intersection을 수행해 본 결과로 인덱스 생성 전과 동일하게 2분이 소요되는 것을 확인했다. 인덱스는 검색의 효율성을 높이는 것이므로 공간 연산을 하는데 영향이 없을 것이라고 예상한 것과 동일하게 **st\_intersection의 성능이 향상되지 않았다.**
 
+공간 인덱스 검증을 마치고 **st\_snaptogrid 방식의 해결 방법 검증**을 진행했다. st\_snaptogrid는 파라미터로 precision 이라는 정밀도 값이 입력되는데 해당 값을 적절하게 넣어주기 위한 방법을 고민하여, 지도에서 줌 레벨별 픽셀 길이를 위도로 환산한 값을 넣는 것을 생각해냈다. 또한 **높은 줌 레벨**에서는 많은 결과가 존재할 수 있으므로 사용자가 보이는 부분에 대해서만 조회할 수 있도록 **보이는 영역에 대해서만 st\_intersects 함수를 수행**하도록 쿼리를 작성했다.
 
+```sql
+WITH snap_polygons AS
+         (SELECT ((st_dump(st_snaptogrid(changed_area::geometry, :precision))).geom) polygon
+          FROM change_detection_result
+          WHERE scene_id = :sceneId
+            AND project_id = :projectId)
+SELECT st_multi(st_union(polygon))
+FROM snap_polygons
+WHERE st_intersects(polygon, :viewport);
+```
 
-#### 영상의 썸네일 생성 실패 해결
-
-* 영상이 3밴드 영상이지만 메타데이터에는 Gray로 되어 있으므로 데이터 자체에 문제가 있는 것으로 판단
-* 데이터 엔지니어에게 RGB로 넣는 작업을 요청
-* RGB로 변경된 영상을 저장하니 red, green, blue, alpha 가 존재하여 프론트에서 영상 조회를 실패함
-* 현재 상황과 해결 방안을 정리하여 팀원들과 논의하여 해결 방향을 결정
+기존에는 약 2분 걸리던 쿼리가 개선한 쿼리는 약 **500ms로 개선**된 것을 확인했다. 이 방법을 활용하여 API를 개선하는 작업을 진행할 예정이다. 이로써 조회 성능을 개선시키고 프론트에서 대량의 폴리곤을 효율적으로 보여줄 수 있을 것으로 판단된다.
 
 
 
 ## 앞으로 할 일
 
 * [ ] 회사 업무
-  * [ ] Github Actions 추가 개선 (ref. [백엔드 Github Actions 개선](https://jimmyblog.gitbook.io/jimmys-blog/v/jimmys-log/daily-log-2024/2024.08.05#github-actions))
-* [ ] 개인 학습
-  * [ ] AOP의 Joinpoint 분석
-  * [ ] @Transactional 동작원리 학습
+  * [x] 대량 변화 탐지시 조회 성능 측정
+    * [x] st\_snaptogrid 방식의 해결 방법 검증
+    * [x] 공간 인덱스 검증
+  * [ ] 대량 변화 탐지시 조회 성능 개선
 * [ ] 사이드 프로젝트
-  * [ ] Swagger Docs 보완
-  * [ ] @Profile 적용
-  * [ ] 알림 기능 구현
-  * [ ] uuid v7 적용
-  * [ ] 에러 로깅 적용
+  * [ ] 알림 기능 테스트 구현
