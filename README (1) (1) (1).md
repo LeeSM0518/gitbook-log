@@ -1,10 +1,10 @@
 ---
-description: 일일 회고 28회차
+description: 일일 회고 29회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# 🙂 2024.10.18
+# ✏️ 2024.10.19
 
 {% hint style="success" %}
 _**Keep**_
@@ -28,40 +28,56 @@ _**Try**_
 
 ## 오늘 할 일
 
-* [x] 회사 업무
-  * [x] 대량 변화 탐지시 조회 성능 측정
+* [x] 사이드 프로젝트
+  * [x] 알림 기능 테스트 구현
+  * [x] Notion을 Jira와 Confluence로 마이그레이션
 
 ## 경험 및 배움
 
-### 회사 업무
+### 사이드 프로젝트
 
-#### 대량 변화 탐지시 조회 성능 측정
+#### 알림 기능 테스트 구현
 
-**GIST 공간 인덱스를 생성**한 후에 st\_intersection을 수행해 본 결과로 인덱스 생성 전과 동일하게 2분이 소요되는 것을 확인했다. 인덱스는 검색의 효율성을 높이는 것이므로 공간 연산을 하는데 영향이 없을 것이라고 예상한 것과 동일하게 **st\_intersection의 성능이 향상되지 않았다.**
+이전에 구현한 리뷰와 리뷰댓글, 문의, 문의댓글 작성시 알림을 전송하는 기능을 테스트하는 작업을 진행했다. 글을 작성하는 API를 호출한 후에 알림 테이블에서 데이터를 조회한 후에 해당 데이터가 잘 저장되어 있는지 확인하는 코드로 테스트를 구현했다.&#x20;
 
-공간 인덱스 검증을 마치고 **st\_snaptogrid 방식의 해결 방법 검증**을 진행했다. st\_snaptogrid는 파라미터로 precision 이라는 정밀도 값이 입력되는데 해당 값을 적절하게 넣어주기 위한 방법을 고민하여, 지도에서 줌 레벨별 픽셀 길이를 위도로 환산한 값을 넣는 것을 생각해냈다. 또한 **높은 줌 레벨**에서는 많은 결과가 존재할 수 있으므로 사용자가 보이는 부분에 대해서만 조회할 수 있도록 **보이는 영역에 대해서만 st\_intersects 함수를 수행**하도록 쿼리를 작성했다.
+알림을 저장하는 것은 비동기로 동작하기 때문에 테스트를 실패할 것으로 예상했으나 테스트가 정상적으로 완료되는 것을 확인했다. 리뷰 데이터를 검증하는 동안 알림 데이터가 저장되어 테스트가 성공하는 것으로 판단된다.
 
-```sql
-WITH snap_polygons AS
-         (SELECT ((st_dump(st_snaptogrid(changed_area::geometry, :precision))).geom) polygon
-          FROM change_detection_result
-          WHERE scene_id = :sceneId
-            AND project_id = :projectId)
-SELECT st_multi(st_union(polygon))
-FROM snap_polygons
-WHERE st_intersects(polygon, :viewport);
-```
 
-기존에는 약 2분 걸리던 쿼리가 개선한 쿼리는 약 **500ms로 개선**된 것을 확인했다. 이 방법을 활용하여 API를 개선하는 작업을 진행할 예정이다. 이로써 조회 성능을 개선시키고 프론트에서 대량의 폴리곤을 효율적으로 보여줄 수 있을 것으로 판단된다.
+
+#### Notion을 Jira와 Confluence로 마이그레이션
+
+사이드 프로젝트 관련 문서를 모두 Notion에서 관리하고 있었으나 프론트엔드 개발자와 일정 및 문서를 공유하기 위해 Jira와 Confluence로 옮기기로 결정했다. Notion은 2인 이상 사용할 경우 생성할 수 있는 블럭 개수가 한정되어 있는데 해당 개수가 매우 적어 사실상 유료로 사용해야 한다. 하지만 Jira와 Confluence는 무료로 최대 2GB까지 데이터를 저장할 수 있으며 Jira와 Confluence를 사용하는 기업들이 많으므로 해당 플랫폼에 익숙해지기 위해 옮기게 되었다.
+
+
+
+Notion에서 문서들을 Confluence로 마이그레이션하는 방법은 다음과 같다.
+
+1. Notion에서 내보내기 형식을 HTML로 한 후 내보내기 수행
+2. Confluence에서 스페이스 > 다른 도구에서 가져오기 메뉴 실행
+3. Notion 클릭
+4. Notion에서 내보낸 ZIP 파일 업로드
+5. Confluence의 새로운 스페이스로 마이그레이션 완료
+
+<figure><img src=".gitbook/assets/image (14).png" alt=""><figcaption><p>Confluence로 마이그레이션 한 결과</p></figcaption></figure>
+
+
+
+이번에 요구사항을 다시 정리하면서 Jira에 수행해야할 작업을 정리했다.
+
+<figure><img src=".gitbook/assets/image (15).png" alt=""><figcaption><p>Jira에 작업 할당한 결과</p></figcaption></figure>
+
+
+
+기존에는 백엔드와 프론트가 각자 알아서 작업을 하고 있었으나 점차 프로젝트가 진행이 잘 안되었다. 위와 같이 요구사항을 재정리하고 해야할 작업을 구체적으로 명시해보니 확실히 동기부여가 되고 프로젝트를 진행하기에 수월해졌다.
+
+지금까지 기본적인 API는 구현을 완료했으므로 API를 구현하거나 수정하는 것을 빠르고 편하게 AWS로 배포하기 위해 CI/CD 구축을 먼저 진행할 예정이다.
 
 
 
 ## 앞으로 할 일
 
 * [ ] 회사 업무
-  * [x] 대량 변화 탐지시 조회 성능 측정
-    * [x] st\_snaptogrid 방식의 해결 방법 검증
-    * [x] 공간 인덱스 검증
   * [ ] 대량 변화 탐지시 조회 성능 개선
 * [ ] 사이드 프로젝트
-  * [ ] 알림 기능 테스트 구현
+  * [x] 알림 기능 테스트 구현
+  * [ ] CI/CD 구축

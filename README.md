@@ -1,10 +1,10 @@
 ---
-description: 일일 회고 33회차
+description: 일일 회고 34회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# ✏️ 2024.10.24
+# ✏️ 2024.10.25
 
 {% hint style="success" %}
 _**Keep**_
@@ -30,35 +30,25 @@ _**Try**_
 
 ### 회사 업무
 
-#### GDAL 테스트 환경 구성
+#### 변화 탐지 영역 조회 API 버그 수정
 
-GDAL 라이브러리를 사용해서 영상을 읽고 특정 작업을 수행하는 코드를 테스트하기 위해 테스트 환경을 구성하는 작업을 진행했다. GDAL 테스트 환경을 구축하는 이유는 GDAL 라이브러리가 C++로 구성되어 있어서 JNI로 변환한 라이브러리를 JDK에 추가한 후에 테스트가 가능하기 때문이다. 이처럼 GDAL 라이브러리를 로컬에 구성하는 것은 까다로워서 IntelliJ에서 Docker로 테스트를 수행하기 위한 Docker 이미지 구축 작업을 진행했다.
+이전에 구현했던 사용자의 지도 줌 레벨과 보이는 영역을 기준으로 변화 영역을 조회하는 API에서 버그가 발생했다. 에러 로그를 확인해보니 쿼리에서 문제가 발생하는 것으로 확인되어 쿼리 분석을 진행했다. 에러가 발생하는 데이터를 기반으로 쿼리를 실행해보니 동일하게 에러가 발생하여 어느 부분에서 문제가 발생하는 것인지 분석해봤다.
 
-Docker Image를 구성하고 Intellij에서 해당 이미지로 테스트를 수행해봤다. 성공적으로 테스트가 수행되지만 테스트가 완료되는데 매번 약 5분이 소요됐다. 테스트시 매번 라이브러리를 설치해오기 때문에 오래 걸리는 것으로 확인됐다. 이를 개선하기 위해 미리 라이브러리를 설치해놓은 이미지를 새로 빌드하고 사용해봐도 동일하게 라이브러리를 설치해오는 것으로 확인됐다.
-
-테스트 실행시 라이브러리를 설치하지 않고 기존 라이브러리를 사용하도록 하는 방법을 좀 더 찾아보고 개선할 예정이다.
+하나의 큰 쿼리를 나눠서 실행하다보니 st\_area 함수에서 에러가 발생하는 것을 발견했다. st\_area 함수를 호출할 때 use\_spheroid 파라미터가 존재하는데 해당 파라미터에 FALSE를 넣을 경우 평면으로 면적을 계산하여 0보다 작은 값이 나오기 때문에 에러가 발생하는 것을 알게 되었다. 하지만 use\_spheroid에 True를 넣어서 함수를 호출할 경우 잘못된 값이 응답되는 것으로 확인되어 이에 대한 원인과 좌표계에 대한 분석을 진행할 예정이다.
 
 
 
 ### 개인 학습
 
-#### 자료구조 학습 (Set, Graph)
+#### 알고리즘 학습 (Sort, Simultation)
 
-Set은 많이 사용해 본 자료구조이며 이해하기 쉽다. Set 내용을 간단하게 정리한 후 관련 문제를 풀어봤으며 이는 다음 문서에 정리해놨다.
+정렬 알고리즘은 삽입, 병합, 힙, 우선순위 큐, 계수, 위상에 대한 개념과 시간 복잡도를 정리했으며 관련 문제를 풀어본 뒤 다음 문서에 정리해놨다.
 
-{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/jimmys-tech/data-structure/set" %}
+{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/jimmys-tech/algorithm/sort" %}
 
-Graph는 기본 개념은 간단하지만 구현하는 것과 탐색하는 방식이 단순하지 않아서 해당 개념과 구현 코드를 같이 정리했다. 그 후 관련 문제를 풀어본 뒤 다음 문서에 문제 내용과 코드를 같이 작성해놨다.
+시뮬레이션은 행렬 연산, 좌표 연사느 대칭 및 회전 연산에 대해 정리한 후 관련 문제를 풀어보고 다음 문서에 정리해놨다.
 
-{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/jimmys-tech/data-structure/graph" %}
-
-
-
-#### 알고리즘 학습 (Backtracking)
-
-백트래킹 알고리즘은 단순하게 가능성이 없는 곳은 되돌아간다는 단순한 개념을 내포하고 있지만, 어떠한 상황과 값이 가능성이 없는 것인지를 찾아내는 것이 어렵다. 개념은 간단하게 정리한 후 관련 문제를 여러 개를 풀어보면서 깊게 이해를 해야할 것 같다. 개념과 관련 문제를 푼 내용은 다음 문서에 정리해놨다.
-
-{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/jimmys-tech/algorithm/backtracking" %}
+{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/jimmys-tech/algorithm/simulation" %}
 
 
 
