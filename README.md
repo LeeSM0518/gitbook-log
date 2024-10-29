@@ -1,10 +1,10 @@
 ---
-description: 일일 회고 34회차
+description: 일일 회고 35회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# ✏️ 2024.10.25
+# ✏️ 2024.10.26
 
 {% hint style="success" %}
 _**Keep**_
@@ -28,27 +28,17 @@ _**Try**_
 
 ## 경험 및 배움
 
-### 회사 업무
-
-#### 변화 탐지 영역 조회 API 버그 수정
-
-이전에 구현했던 사용자의 지도 줌 레벨과 보이는 영역을 기준으로 변화 영역을 조회하는 API에서 버그가 발생했다. 에러 로그를 확인해보니 쿼리에서 문제가 발생하는 것으로 확인되어 쿼리 분석을 진행했다. 에러가 발생하는 데이터를 기반으로 쿼리를 실행해보니 동일하게 에러가 발생하여 어느 부분에서 문제가 발생하는 것인지 분석해봤다.
-
-하나의 큰 쿼리를 나눠서 실행하다보니 st\_area 함수에서 에러가 발생하는 것을 발견했다. st\_area 함수를 호출할 때 use\_spheroid 파라미터가 존재하는데 해당 파라미터에 FALSE를 넣을 경우 평면으로 면적을 계산하여 0보다 작은 값이 나오기 때문에 에러가 발생하는 것을 알게 되었다. 하지만 use\_spheroid에 True를 넣어서 함수를 호출할 경우 잘못된 값이 응답되는 것으로 확인되어 이에 대한 원인과 좌표계에 대한 분석을 진행할 예정이다.
-
-
-
 ### 개인 학습
 
-#### 알고리즘 학습 (Sort, Simultation)
+#### 알고리즘 학습 (Dynamic Programming, Greedy)
 
-정렬 알고리즘은 삽입, 병합, 힙, 우선순위 큐, 계수, 위상에 대한 개념과 시간 복잡도를 정리했으며 관련 문제를 풀어본 뒤 다음 문서에 정리해놨다.
+DP는 작은 문제들을 해결하고 이를 활용하여 전체 문제를 해결하는 알고리즘이다. 이를 위해 문제를 나누고 해결하기 위한 점화식을 세우는 방법에 대해 학습을 했다. 그 후 피보나치 수와 최장 증가 부분 수열, 최장 공통 부분 수열에서 어떻게 적용될 수 있는지 알아봤다. 마지막으로 관련 문제를 풀어본 후에 다음 문서에 정리했다. 특정 문제에 대해 DP를 잘 활용하려면 점화식을 적절하게 세우는 방법을 터득할 필요가 있다. 여러 DP 관련 문제를 풀어보면서 점화식을 세우는 방법을 터득해보도록 하자.
 
-{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/jimmys-tech/algorithm/sort" %}
+{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/jimmys-tech/algorithm/dynamic-programming" %}
 
-시뮬레이션은 행렬 연산, 좌표 연사느 대칭 및 회전 연산에 대해 정리한 후 관련 문제를 풀어보고 다음 문서에 정리해놨다.
+Greedy는 매번 최선의 선택을 하며 최적의 해를 구하는 알고리즘이다. 해당 알고리즘은 최적 부분 구조와 그리디 선택 속성을 만족해야 문제를 해결할 수 있다. 관련 알고리즘으로 프림 알고리즘과 크루스칼 알고리즘에 대한 내용을 정리하고 관련 문제를 풀어본 후 다음 문서에 정리했다. 여러 Greedy 관련 문제를 풀어보면서 어떤 문제가 Greedy 알고리즘에 적절한 문제인지를 파악하며 Greedy를 적용하는 방법을 터득해보도록 하자.
 
-{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/jimmys-tech/algorithm/simulation" %}
+{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/jimmys-tech/algorithm/greedy" %}
 
 
 
