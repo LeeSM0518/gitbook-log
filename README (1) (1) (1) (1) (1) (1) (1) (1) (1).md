@@ -1,10 +1,10 @@
 ---
-description: 일일 회고 19회차
+description: 일일 회고 21회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# 🙂 2024.08.13
+# 🙂 2024.08.19
 
 {% hint style="success" %}
 _**Keep**_
@@ -29,70 +29,30 @@ _**Try**_
 ## 오늘 할 일
 
 * [x] 회사 업무
-  * [x] 고객사 요청 작업 대응
-  * [x] 신기능 디자인 리뷰 회의
-* [x] 사이드 프로젝트
-  * [x] 알림 읽음 상태 변경 테스트 구현
+  * [x] 서비스 접속 문제 해결
 
 ## 경험 및 배움
 
 ### 회사 업무
 
-#### 고객사 요청 작업 대응
+#### 서비스 접속 문제 해결
 
-* 고객사의 AI 모델을 저장할 때 식별자를 숫자로 하는 것이 맞는지 고민
-* 우리 쪽에서도 모델에 대한 식별자를 숫자로 하고 있음
-* 고객사에서 직접 만든 모델에 대해 식별자를 숫자로 할 경우 해당 숫자를 앞으로 사용하지 못 함
-* UUID를 사용하고 싶으나 AI 서버에서 식별자를 숫자로 처리하고 있어서 어려움이 있음
-* _**우리 쪽에서 전혀 사용되지 않을 음수를 사용하는 것에 대해 제안 필요**_
+* IDC에 배포한 **서비스들이 접속이 되지 않는 문제가 발생**하여 해결 작업을 진행함
+  * 서비스들을 확인해보니 k8s로 배포되어 있는 pod들은 정상 동작하는 것으로 보였음
+  * 네트워크에 문제가 있는 것으로 판단되어 인프라팀에 확인 요청
+  * 인프라팀에서 **nginx-controlle 이슈로 인해 controller를 재기동하여 정상화**시킴
+  * 주기적으로 해당 문제가 발생하여 인프라팀에 정확한 원인 파악 요청
+* 몇일 전부터 **로컬 임시 스토리지(ephemeral-storage) 부족 문제가 발생**함
+  * 몇몇 pod들이 containerstatusunknown 상태로 변함
+  *   문제가 있는 pod를 describe해보니 다음과 같은 에러 메시지가 출력됨
 
-#### 신기능 디자인 리뷰 회의
-
-* 모델 재학습 신기능 구현에 대한 디자인 리뷰 회의 진행
-* 많은 내용이 오갔지만 대용량 데이터셋을 어떻게 업로드 할 것 인지에 대한 추가 논의 필요
-* _**대용량 파일을 어떻게 처리하는 것이 효율적일지 조사 필요**_
-
-
-
-### 사이드 프로젝트
-
-#### 알림 읽음 상태 변경 테스트 구현
-
-* 알림 읽음 상태 변경 API를 "/notifications/{notificationId}/checked" 로 정의
-  * 해당 API로 단일 알림과 모든 알림의 읽음 상태를 변경하도록 구현함
-  * 통합 테스트를 구현하여 실행 해보니 테스트가 실패하여 원인 파악 필요
-
-```kotlin
-@Test
-    fun `읽지 않은 모든 알림의 읽음 상태를 변경 요청할 수 있다`() = runTest {
-        // given
-        val memberId = expected.receiverId.toString()
-
-        // when
-        val count = webTestClient
-            .patch()
-            .uri("/notifications//checked")
-            .accept(APPLICATION_JSON)
-            .header(AUTHORIZATION, memberId)
-            .exchange()
-            .expectBody<CheckNotificationResponse>()
-            .returnResult()
-            .responseBody!!
-            .count
-
-        // then
-        assertThat(count).isOne()
-    }
-```
-
-
+      \-> The node was low on resource: ephemeral-storage. Container ovision-web-server was using 15624Ki, which exceeds its request of 0.
+  * 이에 대해 찾아보니 pod에서 **ephemeral-storage 관련 자원을 설정**하면 해결될 것으로 예상되지만 이 방식으로 해결해도 되는 것인지 인프라팀에 확인 요청
 
 ## 앞으로 할 일
 
 * [ ] 회사 업무
-  * [ ] LWLock 발생 원인 및 해결 방법 분석
-  * [ ] Github Actions 추가 개선 (ref. [백엔드 Github Actions 개선](https://jimmyblog.gitbook.io/jimmys-blog/v/jimmys-log#undefined-2))
-  * [ ] 주기적으로 실행하는 로직에 Timer 적용
+  * [ ] Github Actions 추가 개선 (ref. [백엔드 Github Actions 개선](https://jimmyblog.gitbook.io/jimmys-blog/v/jimmys-log/daily-log-2024/2024.08.05#github-actions))
 * [ ] 개인 학습
   * [ ] AOP의 Joinpoint 분석
   * [ ] @Transactional 동작원리 학습

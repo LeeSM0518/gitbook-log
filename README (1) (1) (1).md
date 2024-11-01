@@ -1,10 +1,10 @@
 ---
-description: 일일 회고 33회차
+description: 일일 회고 35회차
 cover: .gitbook/assets/Frame 85 (1).png
 coverY: 0
 ---
 
-# ✏️ 2024.10.24
+# ✏️ 2024.10.26
 
 {% hint style="success" %}
 _**Keep**_
@@ -28,37 +28,17 @@ _**Try**_
 
 ## 경험 및 배움
 
-### 회사 업무
-
-#### GDAL 테스트 환경 구성
-
-GDAL 라이브러리를 사용해서 영상을 읽고 특정 작업을 수행하는 코드를 테스트하기 위해 테스트 환경을 구성하는 작업을 진행했다. GDAL 테스트 환경을 구축하는 이유는 GDAL 라이브러리가 C++로 구성되어 있어서 JNI로 변환한 라이브러리를 JDK에 추가한 후에 테스트가 가능하기 때문이다. 이처럼 GDAL 라이브러리를 로컬에 구성하는 것은 까다로워서 IntelliJ에서 Docker로 테스트를 수행하기 위한 Docker 이미지 구축 작업을 진행했다.
-
-Docker Image를 구성하고 Intellij에서 해당 이미지로 테스트를 수행해봤다. 성공적으로 테스트가 수행되지만 테스트가 완료되는데 매번 약 5분이 소요됐다. 테스트시 매번 라이브러리를 설치해오기 때문에 오래 걸리는 것으로 확인됐다. 이를 개선하기 위해 미리 라이브러리를 설치해놓은 이미지를 새로 빌드하고 사용해봐도 동일하게 라이브러리를 설치해오는 것으로 확인됐다.
-
-테스트 실행시 라이브러리를 설치하지 않고 기존 라이브러리를 사용하도록 하는 방법을 좀 더 찾아보고 개선할 예정이다.
-
-
-
 ### 개인 학습
 
-#### 자료구조 학습 (Set, Graph)
+#### 알고리즘 학습 (Dynamic Programming, Greedy)
 
-Set은 많이 사용해 본 자료구조이며 이해하기 쉽다. Set 내용을 간단하게 정리한 후 관련 문제를 풀어봤으며 이는 다음 문서에 정리해놨다.
+DP는 작은 문제들을 해결하고 이를 활용하여 전체 문제를 해결하는 알고리즘이다. 이를 위해 문제를 나누고 해결하기 위한 점화식을 세우는 방법에 대해 학습을 했다. 그 후 피보나치 수와 최장 증가 부분 수열, 최장 공통 부분 수열에서 어떻게 적용될 수 있는지 알아봤다. 마지막으로 관련 문제를 풀어본 후에 다음 문서에 정리했다. 특정 문제에 대해 DP를 잘 활용하려면 점화식을 적절하게 세우는 방법을 터득할 필요가 있다. 여러 DP 관련 문제를 풀어보면서 점화식을 세우는 방법을 터득해보도록 하자.
 
-{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/jimmys-tech/data-structure/set" %}
+{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/jimmys-tech/algorithm/dynamic-programming" %}
 
-Graph는 기본 개념은 간단하지만 구현하는 것과 탐색하는 방식이 단순하지 않아서 해당 개념과 구현 코드를 같이 정리했다. 그 후 관련 문제를 풀어본 뒤 다음 문서에 문제 내용과 코드를 같이 작성해놨다.
+Greedy는 매번 최선의 선택을 하며 최적의 해를 구하는 알고리즘이다. 해당 알고리즘은 최적 부분 구조와 그리디 선택 속성을 만족해야 문제를 해결할 수 있다. 관련 알고리즘으로 프림 알고리즘과 크루스칼 알고리즘에 대한 내용을 정리하고 관련 문제를 풀어본 후 다음 문서에 정리했다. 여러 Greedy 관련 문제를 풀어보면서 어떤 문제가 Greedy 알고리즘에 적절한 문제인지를 파악하며 Greedy를 적용하는 방법을 터득해보도록 하자.
 
-{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/jimmys-tech/data-structure/graph" %}
-
-
-
-#### 알고리즘 학습 (Backtracking)
-
-백트래킹 알고리즘은 단순하게 가능성이 없는 곳은 되돌아간다는 단순한 개념을 내포하고 있지만, 어떠한 상황과 값이 가능성이 없는 것인지를 찾아내는 것이 어렵다. 개념은 간단하게 정리한 후 관련 문제를 여러 개를 풀어보면서 깊게 이해를 해야할 것 같다. 개념과 관련 문제를 푼 내용은 다음 문서에 정리해놨다.
-
-{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/jimmys-tech/algorithm/backtracking" %}
+{% embed url="https://jimmyblog.gitbook.io/jimmys-blog/jimmys-tech/algorithm/greedy" %}
 
 
 
